@@ -4,11 +4,11 @@
 #
 # $Log:$
 #
-CC=  gcc  # gcc or g++
+CC?=  i686-w64-mingw32-gcc
 
-CFLAGS=-g -Wall -DNORMALUNIX -DLINUX # -DUSEASM 
-LDFLAGS=-L/usr/X11R6/lib
-LIBS=-lXext -lX11 -lnsl -lm
+CFLAGS=-m32 -g -Wall -std=gnu89 -DNORMALUNIX -I.
+LDFLAGS=-m32
+LIBS=-lm
 
 # subdirectory for objects
 O=linux
