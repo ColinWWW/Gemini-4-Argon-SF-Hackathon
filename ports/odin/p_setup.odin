@@ -85,7 +85,7 @@ P_LoadSegs :: proc(lump: int) {
 
 P_LoadSubsectors :: proc(lump: int) {
 	numsubsectors = W_LumpLength(lump) / size_of(mapsubsector_t)
-	subsectors = ([^]subsector_t)(Z_Malloc(numsubsectors * size_of(subsector_t), PU_LEVEL, nil))
+	subsectors = ([^]subsector_t)(Z_Malloc(numsubsectors * size_of(mapsubsector_t), PU_LEVEL, nil))
 	data := W_CacheLumpNum(lump, PU_STATIC)
 
 	ms := ([^]mapsubsector_t)(data)
@@ -365,9 +365,9 @@ P_SetupLevel :: proc(episode: int, map_num: int, playermask: int, skill: skill_t
 
 	if gamemode == .commercial {
 		if map_num < 10 {
-			libc.sprintf(&lumpname[0], "map0%i", i32(map_num))
+			libc.snprintf(&lumpname[0], len(lumpname), "map0%i", i32(map_num))
 		} else {
-			libc.sprintf(&lumpname[0], "map%i", i32(map_num))
+			libc.snprintf(&lumpname[0], len(lumpname), "map%i", i32(map_num))
 		}
 	} else {
 		lumpname[0] = 'E'
