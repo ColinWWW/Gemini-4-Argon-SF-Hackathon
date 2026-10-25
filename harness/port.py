@@ -137,7 +137,10 @@ Rules:
 """
 
     if lang_lower == "rust":
-        instructions += 'Use `unsafe` and `static mut` freely to mirror the C; do not restructure to satisfy the borrow checker.\n'
+        instructions += (
+            "Use unsafe and static mut freely to mirror the C. Use raw pointers where the C uses pointers. "
+            "Do not restructure code to satisfy the borrow checker. The goal is a faithful translation that compiles, not idiomatic Rust.\n"
+        )
 
     instructions += f"""7. Honor the DOOM_FRAME_DIR environment variable for the frame output directory, defaulting to frames/{lang_lower}/, exactly as the reference does.
 8. Target 64-bit Windows. On Windows, long is 32-bit but pointers are 64-bit, so any code that stores a pointer in a long or int must be fixed.
