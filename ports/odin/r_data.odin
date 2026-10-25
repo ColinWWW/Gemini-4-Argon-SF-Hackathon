@@ -214,12 +214,12 @@ R_InitTextures :: proc() {
 
 	names := ([^]byte)(W_CacheLumpName("PNAMES", PU_STATIC))
 	nummappatches := int(LONG((^i32)(names)^))
-	name_p := &names[4]
+	name_p := ([^]byte)(&names[4])
 	patchlookup := ([^]int)(libc.malloc(uint(nummappatches * size_of(int))))
 	defer libc.free(patchlookup)
 
 	for i := 0; i < nummappatches; i += 1 {
-		libc.strncpy(&name[0], cstring(&name_p[i * 8]), 8)
+		libc.memcpy(&name[0], &name_p[i * 8], 8)
 		patchlookup[i] = W_CheckNumForName(cstring(&name[0]))
 	}
 	Z_Free(names)
@@ -228,7 +228,7 @@ R_InitTextures :: proc() {
 	maptex := maptex1
 	numtextures1 := int(LONG(maptex[0]))
 	maxoff := W_LumpLength(W_GetNumForName("TEXTURE1"))
-	directory := &maptex[1]
+	directory_index := 1
 
 	maptex2: [^]i32 = nil
 	numtextures2 := 0
@@ -272,11 +272,11 @@ R_InitTextures :: proc() {
 		if i == numtextures1 {
 			maptex = maptex2
 			maxoff = maxoff2
-			directory = &maptex[1]
+			directory_index = 1
 		}
 
-		offset := int(LONG(directory[0]))
-		directory = &directory[1]
+		offset := int(LONG(maptex[directory_index]))
+		directory_index += 1
 
 		if offset > maxoff {
 			I_Error("R_InitTextures: bad texture directory")
@@ -394,7 +394,7 @@ R_FlatNumForName :: proc(name: cstring) -> int {
 	i := W_CheckNumForName(name)
 	if i == -1 {
 		namet[8] = 0
-		libc.memcpy(&namet[0], name, 8)
+		libc.memcpy(&namet[0], rawptr(name), 8)
 		I_Error("R_FlatNumForName: %s not found", &namet[0])
 	}
 	return i - firstflat
