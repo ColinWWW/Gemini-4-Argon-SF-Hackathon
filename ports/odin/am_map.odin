@@ -2,6 +2,7 @@
 package main
 
 import "core:c/libc"
+import "core:fmt"
 
 REDS        :: 256 - 5*16
 REDRANGE    :: 16
@@ -219,12 +220,12 @@ AM_getIslope :: proc(ml: ^mline_t, is: ^islope_t) {
 	dy := ml.a.y - ml.b.y
 	dx := ml.b.x - ml.a.x
 	if dy == 0 {
-		is.islp = dx < 0 ? -MAXINT : MAXINT
+		is.islp = dx < 0 ? -fixed_t(MAXINT) : fixed_t(MAXINT)
 	} else {
 		is.islp = FixedDiv(dx, dy)
 	}
 	if dx == 0 {
-		is.slp = dy < 0 ? -MAXINT : MAXINT
+		is.slp = dy < 0 ? -fixed_t(MAXINT) : fixed_t(MAXINT)
 	} else {
 		is.slp = FixedDiv(dy, dx)
 	}
@@ -272,10 +273,10 @@ AM_addMark :: proc() {
 }
 
 AM_findMinMaxBoundaries :: proc() {
-	min_x = MAXINT
-	min_y = MAXINT
-	max_x = -MAXINT
-	max_y = -MAXINT
+	min_x = fixed_t(MAXINT)
+	min_y = fixed_t(MAXINT)
+	max_x = -fixed_t(MAXINT)
+	max_y = -fixed_t(MAXINT)
 
 	for i := 0; i < numvertexes; i += 1 {
 		if vertexes[i].x < min_x {
@@ -307,7 +308,7 @@ AM_findMinMaxBoundaries :: proc() {
 AM_changeWindowLoc :: proc() {
 	if m_paninc.x != 0 || m_paninc.y != 0 {
 		followplayer = 0
-		f_oldloc.x = MAXINT
+		f_oldloc.x = fixed_t(MAXINT)
 	}
 
 	m_x += m_paninc.x
@@ -335,7 +336,7 @@ AM_initVariables :: proc() {
 	automapactive = true
 	fb = screens[0]
 
-	f_oldloc.x = MAXINT
+	f_oldloc.x = fixed_t(MAXINT)
 	amclock = 0
 	lightlev = 0
 
@@ -372,7 +373,7 @@ AM_initVariables :: proc() {
 AM_loadPics :: proc() {
 	namebuf: [9]u8
 	for i := 0; i < 10; i += 1 {
-		libc.sprintf(&namebuf[0], "AMMNUM%d", i32(i))
+		fmt.bprintf(namebuf[:], "AMMNUM%d\x00", i)
 		marknums[i] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 	}
 }
@@ -498,13 +499,13 @@ AM_Responder :: proc(ev: ^event_t) -> boolean {
 			}
 		case AM_FOLLOWKEY:
 			followplayer = followplayer == 0 ? 1 : 0
-			f_oldloc.x = MAXINT
+			f_oldloc.x = fixed_t(MAXINT)
 			plr.message = followplayer != 0 ? AMSTR_FOLLOWON : AMSTR_FOLLOWOFF
 		case AM_GRIDKEY:
 			grid = grid == 0 ? 1 : 0
 			plr.message = grid != 0 ? AMSTR_GRIDON : AMSTR_GRIDOFF
 		case AM_MARKKEY:
-			libc.sprintf(&am_buffer[0], "%s %d", AMSTR_MARKEDSPOT, i32(markpointnum))
+			fmt.bprintf(am_buffer[:], "%s %d\x00", AMSTR_MARKEDSPOT, markpointnum)
 			plr.message = cstring(&am_buffer[0])
 			AM_addMark()
 		case AM_CLEARMARKKEY:
