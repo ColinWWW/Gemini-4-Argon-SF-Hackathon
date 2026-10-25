@@ -78,6 +78,18 @@ pub static mut fuzzcolfunc: Option<unsafe fn()> = None;
 pub static mut transcolfunc: Option<unsafe fn()> = None;
 pub static mut spanfunc: Option<unsafe fn()> = None;
 
+pub fn SlopeDiv(num: u32, den: u32) -> u32 {
+    let mut ans: u32;
+    if den < 512 {
+        return SLOPERANGE as u32;
+    }
+    ans = ((num << 3) / (den >> 8));
+    if ans > SLOPERANGE as u32 {
+        ans = SLOPERANGE as u32;
+    }
+    ans
+}
+
 pub unsafe fn R_AddPointToBox(x: i32, y: i32, box_: *mut fixed_t) {
     if x < *box_.add(BOXLEFT) {
         *box_.add(BOXLEFT) = x;
