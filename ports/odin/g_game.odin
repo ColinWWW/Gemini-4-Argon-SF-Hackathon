@@ -482,7 +482,7 @@ G_Ticker :: proc() {
 			}
 
 			if int(cmd.forwardmove) > TURBOTHRESHOLD && (gametic & 31) == 0 && ((gametic >> 5) & 3) == i {
-				libc.sprintf(&turbomessage[0], "%s is turbo!", player_names[i])
+				libc.snprintf(&turbomessage[0], size_of(turbomessage), "%s is turbo!", player_names[i])
 				players[consoleplayer].message = cstring(&turbomessage[0])
 			}
 
@@ -821,7 +821,7 @@ G_DoLoadGame :: proc() {
 	save_p = &savebuffer[SAVESTRINGSIZE]
 
 	libc.memset(&vcheck[0], 0, VERSIONSIZE)
-	libc.sprintf(&vcheck[0], "version %i", i32(VERSION))
+	libc.snprintf(&vcheck[0], size_of(vcheck), "version %i", i32(VERSION))
 	if libc.strcmp(cstring(save_p), cstring(&vcheck[0])) != 0 {
 		return
 	}
@@ -874,9 +874,9 @@ G_DoSaveGame :: proc() {
 	name2: [VERSIONSIZE]u8
 
 	if M_CheckParm("-cdrom") != 0 {
-		libc.sprintf(&name[0], "c:\\doomdata\\" + SAVEGAMENAME + "%d.dsg", i32(savegameslot))
+		libc.snprintf(&name[0], size_of(name), "c:\\doomdata\\" + SAVEGAMENAME + "%d.dsg", i32(savegameslot))
 	} else {
-		libc.sprintf(&name[0], SAVEGAMENAME + "%d.dsg", i32(savegameslot))
+		libc.snprintf(&name[0], size_of(name), SAVEGAMENAME + "%d.dsg", i32(savegameslot))
 	}
 
 	savebuffer = &screens[1][0x4000]
@@ -885,7 +885,7 @@ G_DoSaveGame :: proc() {
 	libc.memcpy(save_p, &savedescription[0], SAVESTRINGSIZE)
 	save_p = &save_p[SAVESTRINGSIZE]
 	libc.memset(&name2[0], 0, VERSIONSIZE)
-	libc.sprintf(&name2[0], "version %i", i32(VERSION))
+	libc.snprintf(&name2[0], size_of(name2), "version %i", i32(VERSION))
 	libc.memcpy(save_p, &name2[0], VERSIONSIZE)
 	save_p = &save_p[VERSIONSIZE]
 
