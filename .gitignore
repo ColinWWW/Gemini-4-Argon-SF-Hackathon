@@ -34,7 +34,8 @@ wad/
 frames/
 *.raw
 *.o
-linuxdoom*
+linuxxdoom*
+linux/
 
 # IDE / OS
 .DS_Store
