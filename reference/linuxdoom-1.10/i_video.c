@@ -112,13 +112,6 @@ void I_ReadScreen(byte* scr)
         memcpy(scr, screens[0], SCREENWIDTH * SCREENHEIGHT);
 }
 
-void I_BeginRead(void)
-{
-}
-
-void I_EndRead(void)
-{
-}
 
 void I_StartTic(void)
 {
