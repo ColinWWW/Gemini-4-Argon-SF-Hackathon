@@ -182,8 +182,8 @@ R_DrawMaskedColumn :: proc(column_in: ^column_t) {
 		dc_yl = int((topscreen + FRACUNIT - 1) >> FRACBITS)
 		dc_yh = int((bottomscreen - 1) >> FRACBITS)
 
-		mfc := int((^i16)(int(uintptr(mfloorclip)) + dc_x * size_of(i16))^)
-		mcc := int((^i16)(int(uintptr(mceilingclip)) + dc_x * size_of(i16))^)
+		mfc := int(mfloorclip[dc_x])
+		mcc := int(mceilingclip[dc_x])
 
 		if dc_yh >= mfc {
 			dc_yh = mfc - 1
@@ -213,7 +213,7 @@ R_DrawVisSprite :: proc(vis: ^vissprite_t, x1: int, x2: int) {
 	} else if (vis.mobjflags & MF_TRANSLATION) != 0 {
 		colfunc = R_DrawTranslatedColumn
 		offset := -256 + ((vis.mobjflags & MF_TRANSLATION) >> (MF_TRANSSHIFT - 8))
-		dc_translation = ([^]byte)(int(uintptr(translationtables)) + offset)
+		dc_translation = ([^]byte)(uintptr(int(uintptr(translationtables)) + offset))
 	}
 
 	dc_iscale = abs(vis.xiscale) >> uint(detailshift)
@@ -471,7 +471,7 @@ R_SortVisSprites :: proc() {
 	vsprsortedhead.prev = &vsprsortedhead
 
 	for i := 0; i < count; i += 1 {
-		bestscale := fixed_t(MAXINT)
+		bestscale := fixed_t(max(i32))
 		best: ^vissprite_t = nil
 		for ds := unsorted.next; ds != &unsorted; ds = ds.next {
 			if ds.scale < bestscale {
@@ -536,22 +536,22 @@ R_DrawSprite :: proc(spr: ^vissprite_t) {
 		if silhouette == 1 {
 			for x := r1; x <= r2; x += 1 {
 				if clipbot[x] == -2 {
-					clipbot[x] = (^i16)(int(uintptr(ds.sprbottomclip)) + x * size_of(i16))^
+					clipbot[x] = ([^]i16)(ds.sprbottomclip)[x]
 				}
 			}
 		} else if silhouette == 2 {
 			for x := r1; x <= r2; x += 1 {
 				if cliptop[x] == -2 {
-					cliptop[x] = (^i16)(int(uintptr(ds.sprtopclip)) + x * size_of(i16))^
+					cliptop[x] = ([^]i16)(ds.sprtopclip)[x]
 				}
 			}
 		} else if silhouette == 3 {
 			for x := r1; x <= r2; x += 1 {
 				if clipbot[x] == -2 {
-					clipbot[x] = (^i16)(int(uintptr(ds.sprbottomclip)) + x * size_of(i16))^
+					clipbot[x] = ([^]i16)(ds.sprbottomclip)[x]
 				}
 				if cliptop[x] == -2 {
-					cliptop[x] = (^i16)(int(uintptr(ds.sprtopclip)) + x * size_of(i16))^
+					cliptop[x] = ([^]i16)(ds.sprtopclip)[x]
 				}
 			}
 		}
