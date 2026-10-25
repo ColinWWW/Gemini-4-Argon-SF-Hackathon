@@ -228,7 +228,7 @@ P_BlockLinesIterator :: proc(x: int, y: int, func: #type proc(^line_t) -> boolea
 	offset := y * bmapwidth + x
 	offset = int(blockmap[offset])
 
-	for list := &blockmaplump[offset]; list[0] != -1; list = &list[1] {
+	for list := ([^]i16)(&blockmaplump[offset]); list[0] != -1; list = &list[1] {
 		ld := &lines[list[0]]
 		if ld.validcount == validcount {
 			continue
