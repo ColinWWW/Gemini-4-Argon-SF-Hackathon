@@ -990,6 +990,10 @@ pub unsafe fn M_EndGame(_choice: i32) {
     );
 }
 
+pub unsafe fn M_Read氛围This(_choice: i32) {
+    M_SetupNextMenu(&mut ReadDef1);
+}
+
 pub unsafe fn M_ReadThis(_choice: i32) {
     M_SetupNextMenu(&mut ReadDef1);
 }
@@ -1609,7 +1613,7 @@ pub unsafe fn M_Drawer() {
 
     for i in 0..max {
         let item = (*currentMenu).menuitems.add(i);
-        if !(*item).name.is_empty() {
+        if !(&(*item).name).is_empty() {
             V_DrawPatchDirect(
                 x,
                 y,
