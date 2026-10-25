@@ -250,7 +250,7 @@ F_CastTicker :: proc() {
 		if castorder[castnum].name == nil {
 			castnum = 0
 		}
-		if mobjinfo[castorder[castnum].type].seesound != 0 {
+		if mobjinfo[castorder[castnum].type].seesound != .sfx_None {
 			S_StartSound(nil, int(mobjinfo[castorder[castnum].type].seesound))
 		}
 		caststate = &states[mobjinfo[castorder[castnum].type].seestate]
@@ -337,7 +337,7 @@ F_CastResponder :: proc(ev: ^event_t) -> boolean {
 	casttics = int(caststate.tics)
 	castframes = 0
 	castattacking = false
-	if mobjinfo[castorder[castnum].type].deathsound != 0 {
+	if mobjinfo[castorder[castnum].type].deathsound != .sfx_None {
 		S_StartSound(nil, int(mobjinfo[castorder[castnum].type].deathsound))
 	}
 
@@ -461,7 +461,7 @@ F_BunnyScroll :: proc() {
 		f_laststage = stage
 	}
 
-	libc.sprintf(&name[0], "END%i", i32(stage))
+	libc.snprintf(&name[0], len(name), "END%i", i32(stage))
 	V_DrawPatch((SCREENWIDTH - 13 * 8) / 2, (SCREENHEIGHT - 8 * 8) / 2, 0, (^patch_t)(W_CacheLumpName(cstring(&name[0]), PU_CACHE)))
 }
 
