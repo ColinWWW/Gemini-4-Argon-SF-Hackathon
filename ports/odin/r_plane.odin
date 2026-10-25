@@ -263,14 +263,13 @@ R_DrawPlanes :: proc() {
 		top_ptr := ([^]byte)(&pl[0].top[0])
 		bottom_ptr := ([^]byte)(&pl[0].bottom[0])
 		top_ptr[pl[0].maxx + 1] = 0xff
-		top_b := (^byte)(int(uintptr(top_ptr)) + pl[0].minx - 1)
-		top_b^ = 0xff
+		top_ptr[pl[0].minx - 1] = 0xff
 
 		stop := pl[0].maxx + 1
 
 		for x := pl[0].minx; x <= stop; x += 1 {
-			t1 := int((^byte)(int(uintptr(top_ptr)) + x - 1)^)
-			b1 := int((^byte)(int(uintptr(bottom_ptr)) + x - 1)^)
+			t1 := int(top_ptr[x - 1])
+			b1 := int(bottom_ptr[x - 1])
 			t2 := int(top_ptr[x])
 			b2 := int(bottom_ptr[x])
 			R_MakeSpans(x, t1, b1, t2, b2)
