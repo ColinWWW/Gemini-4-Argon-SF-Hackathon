@@ -1,7 +1,7 @@
 // Based on id Software's linuxdoom-1.10 (GNU GPL)
 package main
 
-import "core:c/libc"
+import "core:fmt"
 
 STARTREDPALS   :: 1
 STARTBONUSPALS :: 9
@@ -204,6 +204,11 @@ cheat_choppers := cheatseq_t{ &cheat_choppers_seq[0], nil }
 cheat_clev := cheatseq_t{ &cheat_clev_seq[0], nil }
 cheat_mypos := cheatseq_t{ &cheat_mypos_seq[0], nil }
 
+st_sprintf :: proc(buf: []u8, format: string, args: ..any) {
+	n := len(fmt.bprintf(buf[:len(buf) - 1], format, ..args))
+	buf[n] = 0
+}
+
 ST_refreshBackground :: proc() {
 	if st_statusbaron {
 		V_DrawPatch(ST_X, 0, ST_BG, sbar)
@@ -307,7 +312,7 @@ ST_Responder :: proc(ev: ^event_t) -> boolean {
 				st_plr.powers[pw_invulnerability] = 1
 				st_plr.message = STSTR_CHOPPERS
 			} else if cht_CheckCheat(&cheat_mypos, u8(ev.data1)) != 0 {
-				libc.snprintf(&st_mypos_buf[0], len(st_mypos_buf), "ang=0x%x;x,y=(0x%x,0x%x)", u32(players[consoleplayer].mo.angle), u32(players[consoleplayer].mo.x), u32(players[consoleplayer].mo.y))
+				st_sprintf(st_mypos_buf[:], "ang=0x%x;x,y=(0x%x,0x%x)", u32(players[consoleplayer].mo.angle), u32(players[consoleplayer].mo.x), u32(players[consoleplayer].mo.y))
 				st_plr.message = cstring(&st_mypos_buf[0])
 			}
 		}
@@ -597,32 +602,32 @@ ST_Drawer :: proc(fullscreen: boolean, refresh: boolean) {
 }
 
 ST_loadGraphics :: proc() {
-	namebuf: [9]u8
+	namebuf: [16]u8
 
 	for i := 0; i < 10; i += 1 {
-		libc.snprintf(&namebuf[0], len(namebuf), "STTNUM%d", i32(i))
+		st_sprintf(namebuf[:], "STTNUM%d", i32(i))
 		tallnum[i] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 
-		libc.snprintf(&namebuf[0], len(namebuf), "STYSNUM%d", i32(i))
+		st_sprintf(namebuf[:], "STYSNUM%d", i32(i))
 		shortnum[i] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 	}
 
 	tallpercent = (^patch_t)(W_CacheLumpName("STTPRCNT", PU_STATIC))
 
 	for i := 0; i < NUMCARDS; i += 1 {
-		libc.snprintf(&namebuf[0], len(namebuf), "STKEYS%d", i32(i))
+		st_sprintf(namebuf[:], "STKEYS%d", i32(i))
 		keys[i] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 	}
 
 	armsbg = (^patch_t)(W_CacheLumpName("STARMS", PU_STATIC))
 
 	for i := 0; i < 6; i += 1 {
-		libc.snprintf(&namebuf[0], len(namebuf), "STGNUM%d", i32(i + 2))
+		st_sprintf(namebuf[:], "STGNUM%d", i32(i + 2))
 		arms[i][0] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 		arms[i][1] = shortnum[i + 2]
 	}
 
-	libc.snprintf(&namebuf[0], len(namebuf), "STFB%d", i32(consoleplayer))
+	st_sprintf(namebuf[:], "STFB%d", i32(consoleplayer))
 	faceback = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 
 	sbar = (^patch_t)(W_CacheLumpName("STBAR", PU_STATIC))
@@ -630,23 +635,23 @@ ST_loadGraphics :: proc() {
 	facenum := 0
 	for i := 0; i < ST_NUMPAINFACES; i += 1 {
 		for j := 0; j < ST_NUMSTRAIGHTFACES; j += 1 {
-			libc.snprintf(&namebuf[0], len(namebuf), "STFST%d%d", i32(i), i32(j))
+			st_sprintf(namebuf[:], "STFST%d%d", i32(i), i32(j))
 			faces[facenum] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 			facenum += 1
 		}
-		libc.snprintf(&namebuf[0], len(namebuf), "STFTR%d0", i32(i))
+		st_sprintf(namebuf[:], "STFTR%d0", i32(i))
 		faces[facenum] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 		facenum += 1
-		libc.snprintf(&namebuf[0], len(namebuf), "STFTL%d0", i32(i))
+		st_sprintf(namebuf[:], "STFTL%d0", i32(i))
 		faces[facenum] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 		facenum += 1
-		libc.snprintf(&namebuf[0], len(namebuf), "STFOUCH%d", i32(i))
+		st_sprintf(namebuf[:], "STFOUCH%d", i32(i))
 		faces[facenum] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 		facenum += 1
-		libc.snprintf(&namebuf[0], len(namebuf), "STFEVL%d", i32(i))
+		st_sprintf(namebuf[:], "STFEVL%d", i32(i))
 		faces[facenum] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 		facenum += 1
-		libc.snprintf(&namebuf[0], len(namebuf), "STFKILL%d", i32(i))
+		st_sprintf(namebuf[:], "STFKILL%d", i32(i))
 		faces[facenum] = (^patch_t)(W_CacheLumpName(cstring(&namebuf[0]), PU_STATIC))
 		facenum += 1
 	}
