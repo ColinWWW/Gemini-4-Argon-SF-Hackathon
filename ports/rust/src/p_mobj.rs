@@ -1,7 +1,7 @@
 // Based on id Software's linuxdoom-1.10 (GNU GPL)
 
 use std::ffi::c_void;
-use crate::d_player::player_t;
+use crate::d_player::*;
 use crate::d_think::*;
 use crate::doomdata::*;
 use crate::doomdef::*;
