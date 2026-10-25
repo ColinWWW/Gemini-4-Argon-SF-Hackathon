@@ -83,20 +83,12 @@ byte* I_ZoneBase (int*	size)
 
 //
 // I_GetTime
-// returns time in 1/70th second tics
+// Fake clock advancing one tic per call for deterministic replay
 //
 int  I_GetTime (void)
 {
-    struct timeval	tp;
-    struct timezone	tzp;
-    int			newtics;
-    static int		basetime=0;
-  
-    gettimeofday(&tp, &tzp);
-    if (!basetime)
-	basetime = tp.tv_sec;
-    newtics = (tp.tv_sec-basetime)*TICRATE + tp.tv_usec*TICRATE/1000000;
-    return newtics;
+    static int fake_tics = 0;
+    return fake_tics++;
 }
 
 
