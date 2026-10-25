@@ -159,7 +159,7 @@ S_sfx: [int(sfxenum_t.NUMSFX)]sfxinfo_t = {
 	{ "punch", 0, 64, nil, -1, -1, nil, 0, 0 },
 	{ "hoof", 0, 70, nil, -1, -1, nil, 0, 0 },
 	{ "metal", 0, 70, nil, -1, -1, nil, 0, 0 },
-	{ "chgun", 0, 64, &S_sfx[sfxenum_t.sfx_pistol], 150, 0, nil, 0, 0 },
+	{ "chgun", 0, 64, nil, 150, 0, nil, 0, 0 },
 	{ "tink", 0, 60, nil, -1, -1, nil, 0, 0 },
 	{ "bdopn", 0, 100, nil, -1, -1, nil, 0, 0 },
 	{ "bdcls", 0, 100, nil, -1, -1, nil, 0, 0 },
@@ -182,4 +182,9 @@ S_sfx: [int(sfxenum_t.NUMSFX)]sfxinfo_t = {
 	{ "skesit", 0, 70, nil, -1, -1, nil, 0, 0 },
 	{ "skeatk", 0, 70, nil, -1, -1, nil, 0, 0 },
 	{ "radio", 0, 60, nil, -1, -1, nil, 0, 0 },
+}
+
+@(init)
+_init_sounds :: proc() {
+	S_sfx[int(sfxenum_t.sfx_chgun)].link = &S_sfx[int(sfxenum_t.sfx_pistol)]
 }
