@@ -29,6 +29,13 @@ build/
 out/
 .next/
 
+# Project-specific
+wad/
+frames/
+*.raw
+*.o
+linuxdoom*
+
 # IDE / OS
 .DS_Store
 Thumbs.db
