@@ -15,24 +15,25 @@ import re
 import sys
 from pathlib import Path
 
+
 def convert_tables_c(tables_c_path: Path, output_path: Path):
     text = tables_c_path.read_text(encoding="latin1")
 
-    # Extract finetangent
+    # Extract finetangent (4096)
     m_tan = re.search(r'int\s+finetangent\[\s*(\d+)\s*\]\s*=\s*\{([^;]+)\};', text, re.DOTALL)
     if not m_tan:
         raise ValueError("Could not find finetangent in tables.c")
     tan_size = m_tan.group(1)
     tan_vals = [x.strip() for x in re.sub(r'//[^\n]*', '', m_tan.group(2)).split(',') if x.strip()]
 
-    # Extract finesine
+    # Extract finesine (10240)
     m_sin = re.search(r'int\s+finesine\[\s*([^\]]+)\s*\]\s*=\s*\{([^;]+)\};', text, re.DOTALL)
     if not m_sin:
         raise ValueError("Could not find finesine in tables.c")
     sin_size = "10240"
     sin_vals = [x.strip() for x in re.sub(r'//[^\n]*', '', m_sin.group(2)).split(',') if x.strip()]
 
-    # Extract tantoangle
+    # Extract tantoangle (2049)
     m_tta = re.search(r'(?:int|angle_t)\s+tantoangle\[\s*([^\]]+)\s*\]\s*=\s*\{([^;]+)\};', text, re.DOTALL)
     if not m_tta:
         raise ValueError("Could not find tantoangle in tables.c")
@@ -44,18 +45,7 @@ def convert_tables_c(tables_c_path: Path, output_path: Path):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("// DOOM lookup tables mechanically converted to Odin by harness/tables_to_odin.py\n")
         f.write("// Based on id Software's linuxdoom-1.10 tables.c (GNU GPL)\n\n")
-        f.write("package doom\n\n")
-        f.write("FINEANGLES :: 8192\n")
-        f.write("FINEMASK   :: (FINEANGLES - 1)\n")
-        f.write("SLOPERANGE :: 2048\n\n")
-
-        # SlopeDiv
-        f.write("// Utility function called by R_PointToAngle\n")
-        f.write("SlopeDiv :: proc(num: u32, den: u32) -> i32 {\n")
-        f.write("    if den < 512 do return SLOPERANGE\n")
-        f.write("    ans := (num << 3) / (den >> 8)\n")
-        f.write("    return i32(ans <= SLOPERANGE ? ans : SLOPERANGE)\n")
-        f.write("}\n\n")
+        f.write("package main\n\n")
 
         # finetangent
         f.write(f"finetangent: [{tan_size}]fixed_t = {{\n")
@@ -70,10 +60,6 @@ def convert_tables_c(tables_c_path: Path, output_path: Path):
             chunk = sin_vals[i:i+8]
             f.write("    " + ", ".join(chunk) + ",\n")
         f.write("}\n\n")
-
-        # finecosine
-        f.write("// finecosine is just PI/2 phase shift into finesine\n")
-        f.write("finecosine: ^fixed_t = &finesine[FINEANGLES / 4]\n\n")
 
         # tantoangle
         f.write(f"tantoangle: [{tta_size}]angle_t = {{\n")
@@ -101,13 +87,11 @@ def convert_info_c(info_c_path: Path, output_path: Path):
         raise ValueError("Could not find states in info.c")
     states_body = m_states.group(1)
 
-    # Parse each state line
     state_entries = []
     for line in states_body.splitlines():
         line = line.strip()
         if not line or line.startswith("//"):
             continue
-        # Extract comment
         comment = ""
         if "//" in line:
             parts = line.split("//", 1)
@@ -117,18 +101,28 @@ def convert_info_c(info_c_path: Path, output_path: Path):
         # Match: {SPR_TROO,0,-1,{NULL},S_NULL,0,0},
         m_entry = re.search(r'\{([^,]+),([^,]+),([^,]+),\{([^}]+)\},([^,]+),([^,]+),([^}]+)\}', line)
         if m_entry:
-            sprite = m_entry.group(1).strip()
+            sprite_raw = m_entry.group(1).strip()
             frame = m_entry.group(2).strip()
             tics = m_entry.group(3).strip()
             action_raw = m_entry.group(4).strip()
-            nextstate = m_entry.group(5).strip()
+            nextstate_raw = m_entry.group(5).strip()
             misc1 = m_entry.group(6).strip()
             misc2 = m_entry.group(7).strip()
+
+            # Enums need leading dot in Odin
+            sprite = f".{sprite_raw}" if not sprite_raw.startswith(".") else sprite_raw
+
+            if nextstate_raw in ("0", "S_NULL"):
+                nextstate = ".S_NULL"
+            elif not nextstate_raw.startswith("."):
+                nextstate = f".{nextstate_raw}"
+            else:
+                nextstate = nextstate_raw
 
             if action_raw in ("NULL", "0", ""):
                 action_odin = "{}"
             else:
-                action_odin = f"{{ acv = auto_cast {action_raw} }}"
+                action_odin = f"{{ acp1 = auto_cast {action_raw} }}"
 
             state_entries.append((sprite, frame, tics, action_odin, nextstate, misc1, misc2, comment))
 
@@ -138,12 +132,16 @@ def convert_info_c(info_c_path: Path, output_path: Path):
         raise ValueError("Could not find mobjinfo in info.c")
     mobj_body = m_mobj.group(1)
 
-    # Match each { ... } block
     mobj_blocks = re.findall(r'\{([^}]+)\}', mobj_body, re.DOTALL)
     mobj_entries = []
+
+    state_indices = {1, 3, 7, 10, 11, 12, 13, 22}
+    sfx_indices = {4, 6, 9, 14, 20}
+
     for block in mobj_blocks:
         lines = [l.strip() for l in block.splitlines() if l.strip()]
         fields = []
+        field_idx = 0
         for l in lines:
             c = ""
             if "//" in l:
@@ -152,7 +150,25 @@ def convert_info_c(info_c_path: Path, output_path: Path):
                 c = "// " + p[1].strip()
             l = l.rstrip(",")
             if l:
-                fields.append((l, c))
+                val = l
+                # Format enum values with leading dot
+                if field_idx in state_indices:
+                    if val in ("0", "S_NULL"):
+                        val = ".S_NULL"
+                    elif not val.startswith("."):
+                        val = f".{val}"
+                elif field_idx in sfx_indices:
+                    if val in ("0", "sfx_None"):
+                        val = ".sfx_None"
+                    elif not val.startswith("."):
+                        val = f".{val}"
+                else:
+                    val = val.replace("|", " | ")
+                    val = re.sub(r'\s+', ' ', val).strip()
+
+                fields.append((val, c))
+                field_idx += 1
+
         if fields:
             mobj_entries.append(fields)
 
@@ -161,7 +177,7 @@ def convert_info_c(info_c_path: Path, output_path: Path):
     with open(output_path, "w", encoding="utf-8") as f:
         f.write("// DOOM info LUT tables mechanically converted to Odin by harness/tables_to_odin.py\n")
         f.write("// Based on id Software's linuxdoom-1.10 info.c (GNU GPL)\n\n")
-        f.write("package doom\n\n")
+        f.write("package main\n\n")
 
         # sprnames
         f.write(f"sprnames: [{len(spr_names)}]cstring = {{\n")
@@ -176,7 +192,7 @@ def convert_info_c(info_c_path: Path, output_path: Path):
             sprite, frame, tics, action_odin, nextstate, misc1, misc2, comment = s
             entry_str = f"    {{ {sprite}, {frame}, {tics}, {action_odin}, {nextstate}, {misc1}, {misc2} }},"
             if comment:
-                f.write(f"{entry_str:<65} {comment}\n")
+                f.write(f"{entry_str:<70} {comment}\n")
             else:
                 f.write(f"{entry_str}\n")
         f.write("}\n\n")
@@ -186,9 +202,6 @@ def convert_info_c(info_c_path: Path, output_path: Path):
         for entry in mobj_entries:
             f.write("    {\n")
             for val, comm in entry:
-                # Replace C binary bitwise OR
-                val = val.replace("|", " | ")
-                val = re.sub(r'\s+', ' ', val).strip()
                 if comm:
                     f.write(f"        {val + ',':<40} {comm}\n")
                 else:
@@ -212,6 +225,7 @@ def main():
     convert_tables_c(tables_c, tables_odin)
     convert_info_c(info_c, info_odin)
     print("Done generating mechanical Odin table files.")
+
 
 if __name__ == "__main__":
     main()

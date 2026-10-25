@@ -1,18 +1,7 @@
 // DOOM lookup tables mechanically converted to Odin by harness/tables_to_odin.py
 // Based on id Software's linuxdoom-1.10 tables.c (GNU GPL)
 
-package doom
-
-FINEANGLES :: 8192
-FINEMASK   :: (FINEANGLES - 1)
-SLOPERANGE :: 2048
-
-// Utility function called by R_PointToAngle
-SlopeDiv :: proc(num: u32, den: u32) -> i32 {
-    if den < 512 do return SLOPERANGE
-    ans := (num << 3) / (den >> 8)
-    return i32(ans <= SLOPERANGE ? ans : SLOPERANGE)
-}
+package main
 
 finetangent: [4096]fixed_t = {
     -170910304, -56965752, -34178904, -24413316, -18988036, -15535599, -13145455, -11392683,
@@ -1811,9 +1800,6 @@ finesine: [10240]fixed_t = {
     65531, 65531, 65532, 65532, 65533, 65533, 65534, 65534,
     65534, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
 }
-
-// finecosine is just PI/2 phase shift into finesine
-finecosine: ^fixed_t = &finesine[FINEANGLES / 4]
 
 tantoangle: [2049]angle_t = {
     0, 333772, 667544, 1001315, 1335086, 1668857, 2002626, 2336395,
