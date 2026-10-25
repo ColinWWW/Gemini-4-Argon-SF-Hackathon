@@ -168,14 +168,14 @@ pub static mut openbottom: fixed_t = 0;
 pub static mut openrange: fixed_t = 0;
 pub static mut lowfloor: fixed_t = 0;
 
-pub unsafe fn P_LineOpening(linedef: *mut line_t) {
-    if (*linedef).sidenum[1] == -1 {
+pub unsafe fn P_LineOpening(ld: *mut line_t) {
+    if (*ld).sidenum[1] == -1 {
         openrange = 0;
         return;
     }
 
-    let front = (*linedef).frontsector;
-    let back = (*linedef).backsector;
+    let front = (*ld).frontsector;
+    let back = (*ld).backsector;
 
     if (*front).ceilingheight < (*back).ceilingheight {
         opentop = (*front).ceilingheight;
