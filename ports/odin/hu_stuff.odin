@@ -199,7 +199,7 @@ HU_Init :: proc() {
 
 	j := int(HU_FONTSTART)
 	for i := 0; i < HU_FONTSIZE; i += 1 {
-		libc.sprintf(&buffer[0], "STCFN%.3d", i32(j))
+		libc.snprintf(&buffer[0], len(buffer), "STCFN%.3d", i32(j))
 		j += 1
 		hu_font[i] = (^patch_t)(W_CacheLumpName(cstring(&buffer[0]), PU_STATIC))
 	}
