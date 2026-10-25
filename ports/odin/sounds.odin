@@ -1,7 +1,7 @@
 // Based on id Software's linuxdoom-1.10 (GNU GPL)
 package main
 
-S_music := [int(musicenum_t.NUMMUSIC)]musicinfo_t{
+S_music: [int(musicenum_t.NUMMUSIC)]musicinfo_t = {
 	{ nil, 0, nil, 0 },
 	{ "e1m1", 0, nil, 0 },
 	{ "e1m2", 0, nil, 0 },
@@ -72,7 +72,7 @@ S_music := [int(musicenum_t.NUMMUSIC)]musicinfo_t{
 	{ "dm2int", 0, nil, 0 },
 }
 
-S_sfx := [int(sfxenum_t.NUMSFX)]sfxinfo_t{
+S_sfx: [int(sfxenum_t.NUMSFX)]sfxinfo_t = {
 	{ "none", 0, 0, nil, -1, -1, nil, 0, 0 },
 	{ "pistol", 0, 64, nil, -1, -1, nil, 0, 0 },
 	{ "shotgn", 0, 64, nil, -1, -1, nil, 0, 0 },
@@ -159,7 +159,7 @@ S_sfx := [int(sfxenum_t.NUMSFX)]sfxinfo_t{
 	{ "punch", 0, 64, nil, -1, -1, nil, 0, 0 },
 	{ "hoof", 0, 70, nil, -1, -1, nil, 0, 0 },
 	{ "metal", 0, 70, nil, -1, -1, nil, 0, 0 },
-	{ "chgun", 0, 64, nil, 150, 0, nil, 0, 0 },
+	{ "chgun", 0, 64, &S_sfx[sfxenum_t.sfx_pistol], 150, 0, nil, 0, 0 },
 	{ "tink", 0, 60, nil, -1, -1, nil, 0, 0 },
 	{ "bdopn", 0, 100, nil, -1, -1, nil, 0, 0 },
 	{ "bdcls", 0, 100, nil, -1, -1, nil, 0, 0 },
@@ -182,9 +182,4 @@ S_sfx := [int(sfxenum_t.NUMSFX)]sfxinfo_t{
 	{ "skesit", 0, 70, nil, -1, -1, nil, 0, 0 },
 	{ "skeatk", 0, 70, nil, -1, -1, nil, 0, 0 },
 	{ "radio", 0, 60, nil, -1, -1, nil, 0, 0 },
-}
-
-@(init)
-init_sound_links :: proc() {
-	S_sfx[int(sfxenum_t.sfx_chgun)].link = &S_sfx[int(sfxenum_t.sfx_pistol)]
 }
