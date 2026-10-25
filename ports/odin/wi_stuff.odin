@@ -978,7 +978,7 @@ WI_loadData :: proc() {
 	if gamemode == .commercial {
 		libc.strcpy(&name[0], "INTERPIC")
 	} else {
-		libc.sprintf(&name[0], "WIMAP%d", i32(wbs.epsd))
+		libc.snprintf(&name[0], size_of(name), "WIMAP%d", i32(wbs.epsd))
 	}
 
 	if gamemode == .retail {
@@ -994,13 +994,13 @@ WI_loadData :: proc() {
 		NUMCMAPS = 32
 		lnames = ([^]^patch_t)(Z_Malloc(size_of(^patch_t) * NUMCMAPS, PU_STATIC, nil))
 		for i := 0; i < NUMCMAPS; i += 1 {
-			libc.sprintf(&name[0], "CWILV%2.2d", i32(i))
+			libc.snprintf(&name[0], size_of(name), "CWILV%2.2d", i32(i))
 			lnames[i] = (^patch_t)(W_CacheLumpName(cstring(&name[0]), PU_STATIC))
 		}
 	} else {
 		lnames = ([^]^patch_t)(Z_Malloc(size_of(^patch_t) * NUMMAPS, PU_STATIC, nil))
 		for i := 0; i < NUMMAPS; i += 1 {
-			libc.sprintf(&name[0], "WILV%d%d", i32(wbs.epsd), i32(i))
+			libc.snprintf(&name[0], size_of(name), "WILV%d%d", i32(wbs.epsd), i32(i))
 			lnames[i] = (^patch_t)(W_CacheLumpName(cstring(&name[0]), PU_STATIC))
 		}
 
@@ -1013,7 +1013,7 @@ WI_loadData :: proc() {
 				a := &wi_anims[wbs.epsd][j]
 				for i := 0; i < a.nanims; i += 1 {
 					if wbs.epsd != 1 || j != 8 {
-						libc.sprintf(&name[0], "WIA%d%.2d%.2d", i32(wbs.epsd), i32(j), i32(i))
+						libc.snprintf(&name[0], size_of(name), "WIA%d%.2d%.2d", i32(wbs.epsd), i32(j), i32(i))
 						a.p[i] = (^patch_t)(W_CacheLumpName(cstring(&name[0]), PU_STATIC))
 					} else {
 						a.p[i] = wi_anims[1][4].p[i]
@@ -1026,7 +1026,7 @@ WI_loadData :: proc() {
 	wiminus = (^patch_t)(W_CacheLumpName("WIMINUS", PU_STATIC))
 
 	for i := 0; i < 10; i += 1 {
-		libc.sprintf(&name[0], "WINUM%d", i32(i))
+		libc.snprintf(&name[0], size_of(name), "WINUM%d", i32(i))
 		num[i] = (^patch_t)(W_CacheLumpName(cstring(&name[0]), PU_STATIC))
 	}
 
@@ -1056,10 +1056,10 @@ WI_loadData :: proc() {
 	bstar = (^patch_t)(W_CacheLumpName("STFDEAD0", PU_STATIC))
 
 	for i := 0; i < MAXPLAYERS; i += 1 {
-		libc.sprintf(&name[0], "STPB%d", i32(i))
+		libc.snprintf(&name[0], size_of(name), "STPB%d", i32(i))
 		wi_p[i] = (^patch_t)(W_CacheLumpName(cstring(&name[0]), PU_STATIC))
 
-		libc.sprintf(&name[0], "WIBP%d", i32(i + 1))
+		libc.snprintf(&name[0], size_of(name), "WIBP%d", i32(i + 1))
 		bp[i] = (^patch_t)(W_CacheLumpName(cstring(&name[0]), PU_STATIC))
 	}
 }
