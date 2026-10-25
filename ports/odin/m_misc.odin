@@ -47,9 +47,9 @@ M_ReadFile :: proc(name: cstring, buffer: ^[^]byte) -> int {
 	if f == nil {
 		I_Error("Couldn't read file %s", name)
 	}
-	libc.fseek(f, 0, libc.SEEK_END)
+	libc.fseek(f, 0, .END)
 	length := int(libc.ftell(f))
-	libc.fseek(f, 0, libc.SEEK_SET)
+	libc.fseek(f, 0, .SET)
 	buf := ([^]byte)(Z_Malloc(length, PU_STATIC, nil))
 	count := int(libc.fread(buf, 1, uint(length), f))
 	libc.fclose(f)
