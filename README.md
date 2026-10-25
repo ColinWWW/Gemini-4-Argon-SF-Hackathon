@@ -4,8 +4,7 @@
 
 Referee ports id Software's original 1997 Doom source code (`linuxdoom-1.10`, 126 C/header files, ~42,000 lines of C) to **Odin** and **Rust** in single long-decode passes, resolving 32-bit pointer assumptions for native 64-bit execution. The original 1997 C engine acts as the deterministic **referee**: all builds replay the same shareware `demo1` (`5,026 gametics` / `5,066 frames`), dump every raw 320×200 frame + 768-byte RGB palette (`64,768 bytes/frame`), and compare output pixel-for-pixel.
 
-- **Problem Statement 1 (Million Token Engineering):** Whole-engine C-to-Odin and C-to-Rust translations in single model responses, verified against a deterministic ground-truth baseline.
-- **Problem Statement 2 (More Dimensions):** Render → watch → critique → fix loop driven by side-by-side frame diff heatmaps and multi-port visual comparison videos.
+![Three-Way Side-by-Side Comparison: Original C (1997) vs Odin (Argon) vs Rust (Argon)](runs/three_way_01967.gif)
 
 ---
 
@@ -21,43 +20,75 @@ Referee ports id Software's original 1997 Doom source code (`linuxdoom-1.10`, 12
 
 ---
 
-## Total Token Usage & API Cost Breakdown
+## Visual Verification Examples (Inline Previews)
 
-All token usage is logged automatically in [`runs/port_odin.json`](runs/port_odin.json), [`runs/port_rust.json`](runs/port_rust.json), [`runs/compile_odin.json`](runs/compile_odin.json), and [`runs/compile_rust.json`](runs/compile_rust.json).
+### 1. Three-Way Comparison (`Original C` | `Odin (Argon)` | `Rust (Argon)`)
+- **2-second inline preview (frames `01932`–`02001`):**
+  ![Three-Way Comparison](runs/three_way_01967.gif)
+- **Full 60-second H.264 MP4 (`01500`–`03599`, 1920×496 @ 35 fps):** [`runs/three_way_60s.mp4`](runs/three_way_60s.mp4)
 
-### 1. Single-Pass Whole-Engine Ports (`gemini-4-argon`)
+### 2. Odin vs. C Diff Heatmap (Frame `01967`)
+- **2-second inline preview (`Reference C` | `Odin Port` | `Diff Heatmap`):**
+  ![C vs Odin Diff Heatmap at Frame 1967](runs/clip_c_vs_odin_01967.gif)
+- **MP4 & 60s captures:** [`runs/clip_c_vs_odin_01967.mp4`](runs/clip_c_vs_odin_01967.mp4) | [`runs/clip_c_vs_odin_frame00000_60s.mp4`](runs/clip_c_vs_odin_frame00000_60s.mp4) | [`runs/clip_c_vs_odin_frame01500_60s.mp4`](runs/clip_c_vs_odin_frame01500_60s.mp4)
 
-| Port Run | Model | Input Tokens | Cached Input Tokens | Output Tokens | Total Tokens | Artifact |
-|---|---|---:|---:|---:|---:|---|
-| **C → Odin** (122 files in 1 pass) | `gemini-4-argon` | `1,749,208` | `0` | `247,826` | **`1,997,034`** | [`runs/port_odin.json`](runs/port_odin.json) |
-| **C → Rust** (78 files in 1 pass) | `gemini-4-argon` | `2,350,570` | `1,344,809` *(57.2%)* | `311,499` | **`2,662,069`** | [`runs/port_rust.json`](runs/port_rust.json) |
-| **Argon Subtotal** | | **`4,099,778`** | **`1,344,809`** | **`559,325`** | **`4,659,103`** | |
+### 3. Rust vs. C Diff Heatmap (Frame `01967`)
+- **2-second inline preview (`Reference C` | `Rust Port` | `Diff Heatmap`):**
+  ![C vs Rust Diff Heatmap at Frame 1967](runs/clip_c_vs_rust_01967.gif)
+- **MP4:** [`runs/clip_c_vs_rust_01967.mp4`](runs/clip_c_vs_rust_01967.mp4)
 
-### 2. Automated Compile-Fix Loops (`gemini-3.8-flash`)
-
-| Compile Loop | Model | Build Rounds | LLM Fix Calls | Prompt Tokens | Candidate Tokens | Total Tokens (incl. thinking) | Artifact |
-|---|---|---:|---:|---:|---:|---:|---|
-| **Odin Compile Loop** | `gemini-3.8-flash` | 41 | 31 | `185,374` | `158,996` | **`421,563`** | [`runs/compile_odin.json`](runs/compile_odin.json) |
-| **Rust Compile Loop** | `gemini-3.8-flash` | 9 | 7 | `95,223` | `59,378` | **`154,601`** | [`runs/compile_rust.json`](runs/compile_rust.json) |
-| **Flash Subtotal** | | **50** | **38** | **`280,597`** | **`218,374`** | **`576,164`** | |
-
-### 3. Grand Total Across Project
-
-| Metric | Tokens |
-|---|---:|
-| **Total Input / Prompt Tokens** | `4,380,375` *(1,344,809 cached)* |
-| **Total Output / Candidate Tokens** | `777,699` |
-| **Grand Total Tokens** | **`5,235,267`** |
+### 4. Reference C Determinism Gate (`C Run 1` vs `C Run 2` — 100.0% Identical)
+- **2-second inline preview (Frame `00500`):**
+  ![C vs C Determinism Verification](runs/clip_c_vs_c_run2_00500.gif)
+- **MP4 & Score JSON:** [`runs/clip_c_vs_c_run2_00500.mp4`](runs/clip_c_vs_c_run2_00500.mp4) | [`runs/score_c_vs_c_run2.json`](runs/score_c_vs_c_run2.json)
 
 ---
 
-## Visual Examples & Recorded Runs (`runs/`)
+## API Usage, Token Breakdown & Cost Summary
 
-- **[`runs/three_way_60s.mp4`](runs/three_way_60s.mp4)**: 60-second (2,100 frames @ 35 fps, 1920×496) side-by-side comparison of **Original C (1997)** vs **Odin (Argon)** vs **Rust (Argon)** from frame `01500` to `03599`, with live per-frame pixel match % badges.
-- **[`runs/clip_c_vs_odin_01967.mp4`](runs/clip_c_vs_odin_01967.mp4)**: 2-second 3-panel diff heatmap (`Reference C` | `Odin Port` | `Diff Heatmap`) centered on the first divergent frame (`01967`).
-- **[`runs/clip_c_vs_rust_01967.mp4`](runs/clip_c_vs_rust_01967.mp4)**: 2-second 3-panel diff heatmap (`Reference C` | `Rust Port` | `Diff Heatmap`) centered on the first divergent frame (`01967`).
-- **[`runs/clip_c_vs_odin_frame00000_60s.mp4`](runs/clip_c_vs_odin_frame00000_60s.mp4)** & **[`runs/clip_c_vs_odin_frame01500_60s.mp4`](runs/clip_c_vs_odin_frame01500_60s.mp4)**: 60-second side-by-side diff heatmap renders for `C vs Odin`.
-- **[`runs/clip_c_vs_c_run2_00500.mp4`](runs/clip_c_vs_c_run2_00500.mp4)**: Determinism verification clip comparing two independent C referee runs (`100.0%` identical).
+Machine-readable summary: [`runs/api_usage_summary.json`](runs/api_usage_summary.json)  
+Raw interaction & compile logs: [`runs/port_odin.json`](runs/port_odin.json) · [`runs/port_rust.json`](runs/port_rust.json) · [`runs/compile_odin.json`](runs/compile_odin.json) · [`runs/compile_rust.json`](runs/compile_rust.json)
+
+### 1. Single-Pass Whole-Engine Ports (`gemini-4-argon`)
+
+Pricing: `$2.00 / 1M` uncached input tokens, `$0.10 / 1M` cached input tokens (95% discount), `$10.00 / 1M` output tokens.
+
+| Port Run | Interaction ID | Files Written | Total Input Tokens | Cached Input Tokens | Uncached Input Tokens | Output Tokens | Total Tokens | Est. Cost |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| **C → Odin** | `v1_Chd3bUhl...` | 122 | `1,749,208` | `0` *(0.0%)* | `1,749,208` | `247,826` | **`1,997,034`** | `$5.98` |
+| **C → Rust** | `v1_ChdjekxJ...` | 78 | `2,350,570` | `1,344,809` *(57.2%)* | `1,005,761` | `311,499` | **`2,662,069`** | `$5.26` |
+| **Argon Subtotal** | **2 calls** | **200** | **`4,099,778`** | **`1,344,809`** | **`2,754,969`** | **`559,325`** | **`4,659,103`** | **`$11.24`** |
+
+### 2. Automated Compile-Fix Loops (`gemini-3.8-flash`)
+
+| Compile Loop | Build Rounds | LLM Fix Calls | Prompt Tokens | Candidate Tokens | Thinking Tokens | Total Tokens | Est. Cost |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **Odin Compile Loop** ([`compile_odin.json`](runs/compile_odin.json)) | 41 | 31 | `185,374` | `158,996` | `77,193` | **`421,563`** | `$0.17` |
+| **Rust Compile Loop** ([`compile_rust.json`](runs/compile_rust.json)) | 9 | 7 | `95,223` | `59,378` | `0` | **`154,601`** | `$0.05` |
+| **Flash Subtotal** | **50** | **38** | **`280,597`** | **`218,374`** | **`77,193`** | **`576,164`** | **`$0.22`** |
+
+#### Rust Compile-Fix Round-by-Round Progression (`runs/compile_rust.json`)
+
+| Attempt | Target File | Errors in File | Total Crate Errors | Prompt Tokens | Candidate Tokens | Total Tokens |
+|---:|---|---:|---:|---:|---:|---:|
+| 1 | `st_stuff.rs` | 93 | `108` | `41,971` | `12,717` | `54,688` |
+| 3 | `r_main.rs` | 8 | `15` | `6,682` | `5,047` | `11,729` |
+| 4 | `p_mobj.rs` | 3 | `7` | `9,823` | `8,427` | `18,250` |
+| 5 | `f_finale.rs` | 2 | `4` | `6,579` | `5,456` | `12,035` |
+| 6 | `p_maputl.rs` | 1 | `2` | `6,342` | `5,693` | `12,035` |
+| 7 | `r_things.rs` | 1 | `1` | `8,090` | `7,178` | `15,268` |
+| 8 | `m_menu.rs` | 1 | `1` | `15,736` | `14,860` | `30,596` |
+| 9 | *Clean `--release` build* | `0` | **`0`** | — | — | — |
+
+### 3. Project Grand Total vs. $25 Hackathon Budget
+
+| Metric | Value |
+|---|---:|
+| **Total API Calls** | `40` (`2` Argon background port calls + `38` Flash compile-fix calls) |
+| **Total Input / Prompt Tokens** | `4,380,375` (`1,344,809` cached) |
+| **Total Output / Candidate Tokens** | `777,699` |
+| **Grand Total Tokens** | **`5,235,267`** |
+| **Total Estimated API Spend** | **`$11.46` / `$25.00` budget** (`$13.54` remaining) |
 
 ---
 
@@ -80,7 +111,7 @@ All token usage is logged automatically in [`runs/port_odin.json`](runs/port_odi
 │   ├── clip.py                  # 3-panel (Ref, Port, Diff Heatmap) H.264 MP4 renderer
 │   ├── compare.py               # Multi-port side-by-side comparison video renderer with match badges
 │   └── frame2png.py             # Converts raw 64,768-byte indexed frame dumps to RGB PNGs
-└── runs/                        # Token logs, score JSONs, and rendered MP4 comparison clips
+└── runs/                        # Token logs, score JSONs, inline GIFs, and MP4 comparison clips
 ```
 
 ---

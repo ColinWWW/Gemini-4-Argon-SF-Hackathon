@@ -1,0 +1,94 @@
+{
+  "project": "Referee - Pixel-Verified Autonomous Code Migration (linuxdoom-1.10)",
+  "generated_at": "2026-10-25T16:23:00-07:00",
+  "pricing_assumptions_usd_per_1m": {
+    "gemini-4-argon": {
+      "input_uncached": 2.00,
+      "input_cached": 0.10,
+      "output": 10.00
+    },
+    "gemini-3.8-flash": {
+      "input": 0.15,
+      "output": 0.60
+    }
+  },
+  "single_pass_ports": {
+    "odin": {
+      "model": "gemini-4-argon",
+      "interaction_id": "v1_Chd3bUhlYXRxNUhaeUZqckVQbGFqQTRRMBIXd21IZWF0cTVIWnlGanJFUGxhakE0UTA",
+      "files_generated": 122,
+      "input_tokens": 1749208,
+      "cached_input_tokens": 0,
+      "uncached_input_tokens": 1749208,
+      "output_tokens": 247826,
+      "total_tokens": 1997034,
+      "estimated_cost_usd": 5.98,
+      "source_log": "runs/port_odin.json"
+    },
+    "rust": {
+      "model": "gemini-4-argon",
+      "interaction_id": "v1_ChdjekxJYXlyY0xacWZqckVQOFlpcndBMBIXY3pMSWF5cmNMWnFmanJFUDhZaXJ3QTA",
+      "files_generated": 78,
+      "input_tokens": 2350570,
+      "cached_input_tokens": 1344809,
+      "uncached_input_tokens": 1005761,
+      "cache_hit_rate_pct": 57.21,
+      "output_tokens": 311499,
+      "total_tokens": 2662069,
+      "estimated_cost_usd": 5.26,
+      "source_log": "runs/port_rust.json"
+    },
+    "subtotal": {
+      "input_tokens": 4099778,
+      "cached_input_tokens": 1344809,
+      "uncached_input_tokens": 2754969,
+      "output_tokens": 559325,
+      "total_tokens": 4659103,
+      "estimated_cost_usd": 11.24
+    }
+  },
+  "compile_fix_loops": {
+    "odin": {
+      "model": "gemini-3.8-flash",
+      "total_build_attempts": 41,
+      "llm_fix_calls": 31,
+      "prompt_tokens": 185374,
+      "candidates_tokens": 158996,
+      "thinking_tokens": 77193,
+      "total_tokens": 421563,
+      "estimated_cost_usd": 0.17,
+      "source_log": "runs/compile_odin.json"
+    },
+    "rust": {
+      "model": "gemini-3.8-flash",
+      "total_build_attempts": 9,
+      "llm_fix_calls": 7,
+      "initial_errors": 108,
+      "error_progression": [108, 15, 15, 7, 4, 2, 1, 1, 0],
+      "prompt_tokens": 95223,
+      "candidates_tokens": 59378,
+      "thinking_tokens": 0,
+      "total_tokens": 154601,
+      "estimated_cost_usd": 0.05,
+      "source_log": "runs/compile_rust.json"
+    },
+    "subtotal": {
+      "total_build_attempts": 50,
+      "llm_fix_calls": 38,
+      "prompt_tokens": 280597,
+      "candidates_tokens": 218374,
+      "total_tokens": 576164,
+      "estimated_cost_usd": 0.22
+    }
+  },
+  "grand_total": {
+    "total_api_calls": 40,
+    "total_input_tokens": 4380375,
+    "total_cached_input_tokens": 1344809,
+    "total_output_tokens": 777699,
+    "total_tokens": 5235267,
+    "total_estimated_cost_usd": 11.46,
+    "budget_usd": 25.00,
+    "budget_remaining_usd": 13.54
+  }
+}
