@@ -58,7 +58,7 @@ bwhere_e :: enum i32 {
 
 button_t :: struct {
 	line:     ^line_t,
-	where:    bwhere_e,
+	where_:   bwhere_e,
 	btexture: int,
 	btimer:   int,
 	soundorg: ^mobj_t,
