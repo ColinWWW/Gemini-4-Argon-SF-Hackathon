@@ -69,10 +69,16 @@ pub unsafe fn Z_Init() {
     (*block).size = (*mainzone).size - (std::mem::size_of::<memzone_t>() as i32);
 }
 
+#[track_caller]
 pub unsafe fn Z_Free(ptr: *mut c_void) {
+    let loc = std::panic::Location::caller();
     let mut block = (ptr as *mut byte).sub(std::mem::size_of::<memblock_t>()) as *mut memblock_t;
 
     if (*block).id != ZONEID {
+        eprintln!(
+            "Z_Free called from {}:{} ptr={:p}, block={:p}, id=0x{:x}, ZONEID=0x{:x}, tag={}, size={}",
+            loc.file(), loc.line(), ptr, block, (*block).id, ZONEID, (*block).tag, (*block).size
+        );
         I_Error("Z_Free: freed a pointer without ZONEID");
     }
 
@@ -109,7 +115,7 @@ pub unsafe fn Z_Free(ptr: *mut c_void) {
 }
 
 pub unsafe fn Z_Malloc(mut size: i32, tag: i32, user: *mut c_void) -> *mut c_void {
-    size = (size + 3) & !3;
+    size = (size + 7) & !7;
     size += std::mem::size_of::<memblock_t>() as i32;
 
     let mut base = (*mainzone).rover;
