@@ -1,0 +1,91 @@
+{
+  "total_attempts": 9,
+  "status": "compiled",
+  "completed_at": "2026-10-25T15:53:33.195668",
+  "attempts": [
+    {
+      "attempt": 1,
+      "timestamp": "2026-10-25T15:48:23.569196",
+      "file": "st_stuff.rs",
+      "file_errors": 93,
+      "total_errors": 108,
+      "tokens": {
+        "prompt_tokens": 41971,
+        "candidates_tokens": 12717,
+        "total_tokens": 54688
+      }
+    },
+    {
+      "attempt": 3,
+      "timestamp": "2026-10-25T15:49:27.131606",
+      "file": "r_main.rs",
+      "file_errors": 8,
+      "total_errors": 15,
+      "tokens": {
+        "prompt_tokens": 6682,
+        "candidates_tokens": 5047,
+        "total_tokens": 11729
+      }
+    },
+    {
+      "attempt": 4,
+      "timestamp": "2026-10-25T15:50:15.844073",
+      "file": "p_mobj.rs",
+      "file_errors": 3,
+      "total_errors": 7,
+      "tokens": {
+        "prompt_tokens": 9823,
+        "candidates_tokens": 8427,
+        "total_tokens": 18250
+      }
+    },
+    {
+      "attempt": 5,
+      "timestamp": "2026-10-25T15:50:49.177465",
+      "file": "f_finale.rs",
+      "file_errors": 2,
+      "total_errors": 4,
+      "tokens": {
+        "prompt_tokens": 6579,
+        "candidates_tokens": 5456,
+        "total_tokens": 12035
+      }
+    },
+    {
+      "attempt": 6,
+      "timestamp": "2026-10-25T15:51:21.131638",
+      "file": "p_maputl.rs",
+      "file_errors": 1,
+      "total_errors": 2,
+      "tokens": {
+        "prompt_tokens": 5942,
+        "candidates_tokens": 5231,
+        "total_tokens": 11173
+      }
+    },
+    {
+      "attempt": 7,
+      "timestamp": "2026-10-25T15:52:05.921739",
+      "file": "r_things.rs",
+      "file_errors": 1,
+      "total_errors": 1,
+      "tokens": {
+        "prompt_tokens": 8281,
+        "candidates_tokens": 7579,
+        "total_tokens": 15860
+      }
+    },
+    {
+      "attempt": 8,
+      "timestamp": "2026-10-25T15:53:29.701308",
+      "file": "m_menu.rs",
+      "file_errors": 1,
+      "total_errors": 1,
+      "tokens": {
+        "prompt_tokens": 15945,
+        "candidates_tokens": 14921,
+        "total_tokens": 30866
+      }
+    }
+  ]
+}
