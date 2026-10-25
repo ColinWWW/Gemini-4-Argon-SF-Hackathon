@@ -102,7 +102,7 @@ P_DeathThink :: proc(player: ^player_t) {
 		angle := R_PointToAngle2(player.mo.x, player.mo.y, player.attacker.x, player.attacker.y)
 		delta := angle - player.mo.angle
 
-		if delta < ANG5 || delta > (max(angle_t) - ANG5 + 1) {
+		if delta < ANG5 || delta > (0xFFFFFFFF - ANG5 + 1) {
 			player.mo.angle = angle
 			if player.damagecount != 0 {
 				player.damagecount -= 1
