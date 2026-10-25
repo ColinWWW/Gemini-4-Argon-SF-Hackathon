@@ -240,7 +240,7 @@ R_RenderSegLoop :: proc() {
 }
 
 R_StoreWallRange :: proc(start: int, stop: int) {
-	if uintptr(ds_p) >= uintptr(&drawsegs[0]) + size_of(drawsegs) {
+	if uintptr(ds_p) >= uintptr(&drawsegs[0]) + uintptr(size_of(drawsegs)) {
 		return
 	}
 
