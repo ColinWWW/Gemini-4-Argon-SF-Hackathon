@@ -199,7 +199,7 @@ D_DoomLoop :: proc() {
 
 	if M_CheckParm("-debugfile") != 0 {
 		filename: [20]u8
-		libc.sprintf(&filename[0], "debug%i.txt", i32(consoleplayer))
+		libc.snprintf(&filename[0], size_of(filename), "debug%i.txt", i32(consoleplayer))
 		libc.printf("debug output to: %s\n", &filename[0])
 		debugfile = libc.fopen(cstring(&filename[0]), "w")
 	}
@@ -326,25 +326,25 @@ IdentifyVersion :: proc() {
 	}
 
 	doom2wad := ([^]u8)(libc.malloc(libc.strlen(doomwaddir) + 1 + 9 + 1))
-	libc.sprintf(doom2wad, "%s/doom2.wad", doomwaddir)
+	libc.snprintf(doom2wad, libc.strlen(doomwaddir) + 1 + 9 + 1, "%s/doom2.wad", doomwaddir)
 
 	doomuwad := ([^]u8)(libc.malloc(libc.strlen(doomwaddir) + 1 + 8 + 1))
-	libc.sprintf(doomuwad, "%s/doomu.wad", doomwaddir)
+	libc.snprintf(doomuwad, libc.strlen(doomwaddir) + 1 + 8 + 1, "%s/doomu.wad", doomwaddir)
 
 	doomwad := ([^]u8)(libc.malloc(libc.strlen(doomwaddir) + 1 + 8 + 1))
-	libc.sprintf(doomwad, "%s/doom.wad", doomwaddir)
+	libc.snprintf(doomwad, libc.strlen(doomwaddir) + 1 + 8 + 1, "%s/doom.wad", doomwaddir)
 
 	doom1wad := ([^]u8)(libc.malloc(libc.strlen(doomwaddir) + 1 + 9 + 1))
-	libc.sprintf(doom1wad, "%s/doom1.wad", doomwaddir)
+	libc.snprintf(doom1wad, libc.strlen(doomwaddir) + 1 + 9 + 1, "%s/doom1.wad", doomwaddir)
 
 	plutoniawad := ([^]u8)(libc.malloc(libc.strlen(doomwaddir) + 1 + 12 + 1))
-	libc.sprintf(plutoniawad, "%s/plutonia.wad", doomwaddir)
+	libc.snprintf(plutoniawad, libc.strlen(doomwaddir) + 1 + 12 + 1, "%s/plutonia.wad", doomwaddir)
 
 	tntwad := ([^]u8)(libc.malloc(libc.strlen(doomwaddir) + 1 + 9 + 1))
-	libc.sprintf(tntwad, "%s/tnt.wad", doomwaddir)
+	libc.snprintf(tntwad, libc.strlen(doomwaddir) + 1 + 9 + 1, "%s/tnt.wad", doomwaddir)
 
 	doom2fwad := ([^]u8)(libc.malloc(libc.strlen(doomwaddir) + 1 + 10 + 1))
-	libc.sprintf(doom2fwad, "%s/doom2f.wad", doomwaddir)
+	libc.snprintf(doom2fwad, libc.strlen(doomwaddir) + 1 + 10 + 1, "%s/doom2f.wad", doomwaddir)
 
 	iwad_p := M_CheckParm("-iwad")
 	if iwad_p != 0 && iwad_p < myargc - 1 {
@@ -357,7 +357,7 @@ IdentifyVersion :: proc() {
 		if home == nil {
 			home = "."
 		}
-		libc.sprintf(&basedefault[0], "%s/.doomrc", home)
+		libc.snprintf(&basedefault[0], size_of(basedefault), "%s/.doomrc", home)
 		return
 	}
 
@@ -368,7 +368,7 @@ IdentifyVersion :: proc() {
 	if home == nil {
 		home = "."
 	}
-	libc.sprintf(&basedefault[0], "%s/.doomrc", home)
+	libc.snprintf(&basedefault[0], size_of(basedefault), "%s/.doomrc", home)
 
 	if M_CheckParm("-shdev") != 0 {
 		gamemode = .shareware
@@ -533,15 +533,15 @@ D_DoomMain :: proc() {
 
 	switch gamemode {
 	case .retail:
-		libc.sprintf(&title[0], "                         The Ultimate DOOM Startup v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
+		libc.snprintf(&title[0], size_of(title), "                         The Ultimate DOOM Startup v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
 	case .shareware:
-		libc.sprintf(&title[0], "                            DOOM Shareware Startup v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
+		libc.snprintf(&title[0], size_of(title), "                            DOOM Shareware Startup v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
 	case .registered:
-		libc.sprintf(&title[0], "                            DOOM Registered Startup v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
+		libc.snprintf(&title[0], size_of(title), "                            DOOM Registered Startup v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
 	case .commercial:
-		libc.sprintf(&title[0], "                         DOOM 2: Hell on Earth v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
+		libc.snprintf(&title[0], size_of(title), "                         DOOM 2: Hell on Earth v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
 	case .indetermined:
-		libc.sprintf(&title[0], "                     Public DOOM - v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
+		libc.snprintf(&title[0], size_of(title), "                     Public DOOM - v%i.%i                           ", i32(VERSION / 100), i32(VERSION % 100))
 	}
 
 	libc.printf("%s\n", &title[0])
@@ -582,14 +582,14 @@ D_DoomMain :: proc() {
 		case .shareware, .retail, .registered:
 			p1 := ([^]u8)(myargv[p + 1])
 			p2 := ([^]u8)(myargv[p + 2])
-			libc.sprintf(&file[0], "~" + DEVMAPS + "E%cM%c.wad", i32(p1[0]), i32(p2[0]))
+			libc.snprintf(&file[0], size_of(file), "~" + DEVMAPS + "E%cM%c.wad", i32(p1[0]), i32(p2[0]))
 			libc.printf("Warping to Episode %s, Map %s.\n", myargv[p + 1], myargv[p + 2])
 		case .commercial, .indetermined:
 			m := int(libc.atoi(myargv[p + 1]))
 			if m < 10 {
-				libc.sprintf(&file[0], "~" + DEVMAPS + "cdata/map0%i.wad", i32(m))
+				libc.snprintf(&file[0], size_of(file), "~" + DEVMAPS + "cdata/map0%i.wad", i32(m))
 			} else {
-				libc.sprintf(&file[0], "~" + DEVMAPS + "cdata/map%i.wad", i32(m))
+				libc.snprintf(&file[0], size_of(file), "~" + DEVMAPS + "cdata/map%i.wad", i32(m))
 			}
 		}
 		D_AddFile(cstring(&file[0]))
@@ -609,7 +609,7 @@ D_DoomMain :: proc() {
 		p = M_CheckParm("-timedemo")
 	}
 	if p != 0 && p < myargc - 1 {
-		libc.sprintf(&file[0], "%s.lmp", myargv[p + 1])
+		libc.snprintf(&file[0], size_of(file), "%s.lmp", myargv[p + 1])
 		D_AddFile(cstring(&file[0]))
 		libc.printf("Playing demo %s.lmp.\n", myargv[p + 1])
 	}
@@ -769,9 +769,9 @@ D_DoomMain :: proc() {
 	if p != 0 && p < myargc - 1 {
 		ch := ((^u8)(myargv[p + 1]))^
 		if M_CheckParm("-cdrom") != 0 {
-			libc.sprintf(&file[0], "c:\\doomdata\\" + SAVEGAMENAME + "%c.dsg", i32(ch))
+			libc.snprintf(&file[0], size_of(file), "c:\\doomdata\\" + SAVEGAMENAME + "%c.dsg", i32(ch))
 		} else {
-			libc.sprintf(&file[0], SAVEGAMENAME + "%c.dsg", i32(ch))
+			libc.snprintf(&file[0], size_of(file), SAVEGAMENAME + "%c.dsg", i32(ch))
 		}
 		G_LoadGame(cstring(&file[0]))
 	}
