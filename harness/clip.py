@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-harness/clip.py - Render a 2-second clip (70 frames at 35 fps) centered on a frame.
+harness/clip.py - Render side-by-side diff clip between reference and port.
 
 Three side-by-side panels:
   1. Reference frame (320x200 scaled 2x nearest-neighbor)
@@ -8,7 +8,7 @@ Three side-by-side panels:
   3. Diff heatmap    (matching pixels dark grey, mismatched pixels bright red, scaled 2x)
 
 Usage:
-    python harness/clip.py <ref_dir> <port_dir> <frame> [--out <output.mp4>]
+    python harness/clip.py <ref_dir> <port_dir> [<frame>] [--start <frame>] [--seconds <secs>] [--out <output.mp4>]
 """
 
 import argparse
@@ -25,7 +25,7 @@ SCREEN_SIZE = SCREEN_WIDTH * SCREEN_HEIGHT  # 64,000
 PALETTE_SIZE = 768
 EXPECTED_FRAME_SIZE = SCREEN_SIZE + PALETTE_SIZE  # 64,768
 
-CLIP_FRAMES = 70  # 2 seconds at 35 fps
+DEFAULT_CLIP_SECONDS = 2.0
 FPS = 35
 
 PANEL_SCALE = 2
@@ -138,7 +138,14 @@ def render_frame_composite(
     return composite
 
 
-def render_clip(ref_dir: Path, port_dir: Path, target_frame: int, output_path: Path | None = None) -> Path:
+def render_clip(
+    ref_dir: Path,
+    port_dir: Path,
+    target_frame: int | None = None,
+    output_path: Path | None = None,
+    start_frame: int | None = None,
+    seconds: float = DEFAULT_CLIP_SECONDS,
+) -> Path:
     ref_dir = Path(ref_dir)
     port_dir = Path(port_dir)
 
@@ -152,23 +159,31 @@ def render_clip(ref_dir: Path, port_dir: Path, target_frame: int, output_path: P
     max_frame = max(frame_nums) if frame_nums else 0
     total_available = max_frame - min_frame + 1
 
-    # Clamp 70 frames centered on target_frame to available range
-    if total_available <= CLIP_FRAMES:
-        start_frame = min_frame
-        end_frame = max_frame + 1
+    clip_frames = max(1, int(round(seconds * FPS)))
+
+    if start_frame is not None:
+        start = max(min_frame, start_frame)
+        end = min(max_frame + 1, start + clip_frames)
+    elif target_frame is not None:
+        if total_available <= clip_frames:
+            start = min_frame
+            end = max_frame + 1
+        else:
+            half_clip = clip_frames // 2
+            start = target_frame - half_clip
+            end = start + clip_frames
+
+            if start < min_frame:
+                start = min_frame
+                end = min(max_frame + 1, min_frame + clip_frames)
+            elif end > max_frame + 1:
+                end = max_frame + 1
+                start = max(min_frame, end - clip_frames)
     else:
-        half_clip = CLIP_FRAMES // 2  # 35
-        start_frame = target_frame - half_clip
-        end_frame = start_frame + CLIP_FRAMES
+        start = min_frame
+        end = min(max_frame + 1, start + clip_frames)
 
-        if start_frame < min_frame:
-            start_frame = min_frame
-            end_frame = min_frame + CLIP_FRAMES
-        elif end_frame > max_frame + 1:
-            end_frame = max_frame + 1
-            start_frame = max(min_frame, end_frame - CLIP_FRAMES)
-
-    actual_frames_count = end_frame - start_frame
+    actual_frames_count = end - start
 
     ref_name = Path(str(ref_dir).rstrip("/\\")).name or "ref"
     port_name = Path(str(port_dir).rstrip("/\\")).name or "port"
@@ -176,14 +191,18 @@ def render_clip(ref_dir: Path, port_dir: Path, target_frame: int, output_path: P
     if output_path is None:
         runs_dir = Path("runs")
         runs_dir.mkdir(parents=True, exist_ok=True)
-        output_path = runs_dir / f"clip_{ref_name}_vs_{port_name}_{target_frame:05d}.mp4"
+        if start_frame is not None or target_frame is None:
+            output_path = runs_dir / f"clip_{ref_name}_vs_{port_name}_frame{start:05d}_{int(round(seconds))}s.mp4"
+        else:
+            output_path = runs_dir / f"clip_{ref_name}_vs_{port_name}_{target_frame:05d}.mp4"
     else:
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    desc = f"from {start:05d}" if start_frame is not None or target_frame is None else f"centered on {target_frame}"
     print(
-        f"Rendering {actual_frames_count}-frame clip (frames {start_frame:05d} to {end_frame - 1:05d}) "
-        f"centered on {target_frame} at {FPS} fps...",
+        f"Rendering {actual_frames_count}-frame clip (frames {start:05d} to {end - 1:05d}, {actual_frames_count / FPS:.1f}s) "
+        f"{desc} at {FPS} fps...",
         file=sys.stderr,
     )
     print(f"Output: {output_path.as_posix()}", file=sys.stderr)
@@ -219,7 +238,10 @@ def render_clip(ref_dir: Path, port_dir: Path, target_frame: int, output_path: P
     )
 
     try:
-        for fnum in range(start_frame, end_frame):
+        for idx, fnum in enumerate(range(start, end)):
+            if (idx + 1) % 350 == 0 or (idx + 1) == actual_frames_count:
+                print(f"  Processed {idx + 1}/{actual_frames_count} frames...", file=sys.stderr)
+
             ref_file = ref_dir / f"{fnum:05d}.raw"
             port_file = port_dir / f"{fnum:05d}.raw"
 
@@ -262,14 +284,26 @@ def render_clip(ref_dir: Path, port_dir: Path, target_frame: int, output_path: P
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Render 2-second side-by-side diff clip centered on a frame.")
+    parser = argparse.ArgumentParser(description="Render side-by-side diff clip between reference and port.")
     parser.add_argument("ref_dir", type=Path, help="Reference frames directory (e.g. frames/c)")
-    parser.add_argument("port_dir", type=Path, help="Port frames directory (e.g. frames/c_run2)")
-    parser.add_argument("frame", type=int, help="Target frame number (e.g. 500)")
+    parser.add_argument("port_dir", type=Path, help="Port frames directory (e.g. frames/odin)")
+    parser.add_argument("frame", type=int, nargs="?", default=None, help="Target frame number to center clip on")
+    parser.add_argument("--start", type=int, default=None, help="Starting frame number (overrides centered frame)")
+    parser.add_argument("--seconds", type=float, default=DEFAULT_CLIP_SECONDS, help="Duration in seconds (default: 2.0)")
     parser.add_argument("--out", type=Path, default=None, help="Output mp4 path (defaults to runs/clip_*.mp4)")
 
     args = parser.parse_args()
-    out = render_clip(args.ref_dir, args.port_dir, args.frame, args.out)
+    if args.frame is None and args.start is None:
+        args.start = 0
+
+    out = render_clip(
+        ref_dir=args.ref_dir,
+        port_dir=args.port_dir,
+        target_frame=args.frame,
+        output_path=args.out,
+        start_frame=args.start,
+        seconds=args.seconds,
+    )
     # Output path to stdout
     print(out.as_posix())
 
