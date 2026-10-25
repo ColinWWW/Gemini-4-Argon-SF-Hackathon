@@ -55,10 +55,10 @@ AM_CLEARMARKKEY :: int('c')
 
 AM_NUMMARKPOINTS :: 10
 
-INITSCALEMTOF :: (FRACUNIT * 2) / 10
+INITSCALEMTOF :: fixed_t((2 * FRACUNIT) / 10)
 F_PANINC      :: 4
-M_ZOOMIN      :: (102 * FRACUNIT) / 100
-M_ZOOMOUT     :: (100 * FRACUNIT) / 102
+M_ZOOMIN      :: fixed_t((102 * FRACUNIT) / 100)
+M_ZOOMOUT     :: fixed_t((100 * FRACUNIT) / 102)
 
 FTOM :: #force_inline proc(x: int) -> fixed_t {
 	return FixedMul(fixed_t(i32(x) << 16), scale_ftom)
@@ -132,16 +132,16 @@ cheat_player_arrow := [16]mline_t{
 NUMCHEATPLYRLINES :: len(cheat_player_arrow)
 
 triangle_guy := [3]mline_t{
-	{ { (-867 * FRACUNIT) / 1000, -FRACUNIT / 2 }, { (867 * FRACUNIT) / 1000, -FRACUNIT / 2 } },
-	{ { (867 * FRACUNIT) / 1000, -FRACUNIT / 2 }, { 0, FRACUNIT } },
-	{ { 0, FRACUNIT }, { (-867 * FRACUNIT) / 1000, -FRACUNIT / 2 } },
+	{ { fixed_t((-867 * FRACUNIT) / 1000), fixed_t(-FRACUNIT / 2) }, { fixed_t((867 * FRACUNIT) / 1000), fixed_t(-FRACUNIT / 2) } },
+	{ { fixed_t((867 * FRACUNIT) / 1000), fixed_t(-FRACUNIT / 2) }, { 0, FRACUNIT } },
+	{ { 0, FRACUNIT }, { fixed_t((-867 * FRACUNIT) / 1000), fixed_t(-FRACUNIT / 2) } },
 }
 NUMTRIANGLEGUYLINES :: len(triangle_guy)
 
 thintriangle_guy := [3]mline_t{
-	{ { -FRACUNIT / 2, (-7 * FRACUNIT) / 10 }, { FRACUNIT, 0 } },
-	{ { FRACUNIT, 0 }, { -FRACUNIT / 2, (7 * FRACUNIT) / 10 } },
-	{ { -FRACUNIT / 2, (7 * FRACUNIT) / 10 }, { -FRACUNIT / 2, (-7 * FRACUNIT) / 10 } },
+	{ { fixed_t(-FRACUNIT / 2), fixed_t((-7 * FRACUNIT) / 10) }, { FRACUNIT, 0 } },
+	{ { FRACUNIT, 0 }, { fixed_t(-FRACUNIT / 2), fixed_t((7 * FRACUNIT) / 10) } },
+	{ { fixed_t(-FRACUNIT / 2), fixed_t((7 * FRACUNIT) / 10) }, { fixed_t(-FRACUNIT / 2), fixed_t((-7 * FRACUNIT) / 10) } },
 }
 NUMTHINTRIANGLEGUYLINES :: len(thintriangle_guy)
 
@@ -401,7 +401,7 @@ AM_LevelInit :: proc() {
 	AM_clearMarks()
 
 	AM_findMinMaxBoundaries()
-	scale_mtof = FixedDiv(min_scale_mtof, (7 * FRACUNIT) / 10)
+	scale_mtof = FixedDiv(min_scale_mtof, fixed_t((7 * FRACUNIT) / 10))
 	if scale_mtof > max_scale_mtof {
 		scale_mtof = min_scale_mtof
 	}
