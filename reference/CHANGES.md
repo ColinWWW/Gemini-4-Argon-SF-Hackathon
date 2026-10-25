@@ -66,3 +66,39 @@ The reference build acts as the ground truth "referee" for autonomous code migra
 10. **`40a3f40` - i_system: implement fake clock in I_GetTime advancing one tic per call**
     - Replaced real-time `gettimeofday()` clock with a deterministic monotonic tick generator (`static int fake_tics = 0; return fake_tics++;`).
     - Guarantees that `wipe_ScreenWipe` during the level start melt transition runs identical numbers of tics and renders 100% byte-for-byte identical frames on every run.
+
+---
+
+## Gate results
+
+Verification results for Phase 1 reference build (`linuxxdoom.exe`):
+
+1. **Binary architecture check (`file`):**
+   ```
+   reference/linuxdoom-1.10/linux/linuxxdoom.exe: PE32 executable for MS Windows 6.00 (console), Intel i386, 12 sections
+   ```
+   Confirmed 32-bit PE32 binary (Intel i386, not PE32+).
+
+2. **Timedemo completion output:**
+   ```
+   Error: timed 5026 gametics in 25173 realtics
+   ```
+   Gametics: 5026 (exact match with required N = 5026).
+
+3. **Frame count and size check:**
+   - Total frames dumped in `frames/c/`: 5,066 (`00000.raw` through `05065.raw`).
+   - File size verification: 100% of files (5,066 / 5,066) are exactly 64,768 bytes (64,000 bytes 320x200 8-bit indexed buffer + 768 bytes RGB palette).
+
+4. **Determinism verification (two independent runs compared via SHA-256):**
+   - Run 1 directory: `frames/c/`
+   - Run 2 directory: `frames/c_run2/` (with `$DOOM_FRAME_DIR="frames/c_run2"`)
+   - Frames compared: 5,066
+   - Frames mismatched: 0
+   - Result: 100.0% byte-identical determinism across all frames.
+
+5. **Frame to PNG conversion (`harness/frame2png.py`):**
+   - Frame 0: `frames/c/00000.png`
+   - Frame 100: `frames/c/00100.png`
+   - Frame 500: `frames/c/00500.png`
+   - Last frame (5065): `frames/c/05065.png`
+
