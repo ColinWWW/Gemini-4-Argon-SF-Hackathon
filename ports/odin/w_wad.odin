@@ -22,7 +22,7 @@ ExtractFileBase :: proc(path: cstring, dest_in: [^]u8) {
 	dest := dest_in
 	p := ([^]u8)(path)
 	plen := int(libc.strlen(path))
-	src := &p[plen - 1]
+	src: [^]u8 = &p[plen - 1]
 
 	for uintptr(src) != uintptr(p) {
 		prev := (^u8)(uintptr(src) - 1)^
@@ -77,9 +77,9 @@ W_AddFile :: proc(filename_in: cstring) {
 	if c_strcasecmp(ext_ptr, "wad") != 0 {
 		fileinfo = &singleinfo
 		singleinfo.filepos = 0
-		libc.fseek(handle, 0, libc.SEEK_END)
+		libc.fseek(handle, 0, .END)
 		singleinfo.size = LONG(i32(libc.ftell(handle)))
-		libc.fseek(handle, 0, libc.SEEK_SET)
+		libc.fseek(handle, 0, .SET)
 		ExtractFileBase(filename, &singleinfo.name[0])
 		numlumps += 1
 	} else {
@@ -94,7 +94,7 @@ W_AddFile :: proc(filename_in: cstring) {
 		length := int(header.numlumps) * size_of(filelump_t)
 		allocated_fileinfo = libc.malloc(uint(length))
 		fileinfo = ([^]filelump_t)(allocated_fileinfo)
-		libc.fseek(handle, int(header.infotableofs), libc.SEEK_SET)
+		libc.fseek(handle, libc.long(header.infotableofs), .SET)
 		libc.fread(fileinfo, uint(length), 1, handle)
 		numlumps += int(header.numlumps)
 	}
@@ -138,7 +138,7 @@ W_Reload :: proc() {
 	length := lumpcount * size_of(filelump_t)
 	fileinfo := ([^]filelump_t)(libc.malloc(uint(length)))
 	defer libc.free(fileinfo)
-	libc.fseek(handle, int(header.infotableofs), libc.SEEK_SET)
+	libc.fseek(handle, libc.long(header.infotableofs), .SET)
 	libc.fread(fileinfo, uint(length), 1, handle)
 
 	for i := reloadlump; i < reloadlump + lumpcount; i += 1 {
@@ -234,7 +234,7 @@ W_ReadLump :: proc(lump: int, dest: rawptr) {
 		handle = l.handle
 	}
 
-	libc.fseek(handle, int(l.position), libc.SEEK_SET)
+	libc.fseek(handle, libc.long(l.position), .SET)
 	c := int(libc.fread(dest, 1, uint(l.size), handle))
 
 	if c < l.size {
