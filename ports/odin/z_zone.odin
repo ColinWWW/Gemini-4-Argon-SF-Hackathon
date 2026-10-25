@@ -2,6 +2,7 @@
 package main
 
 import "core:c/libc"
+import "core:fmt"
 
 ZONEID :: 0x1d4a11
 
@@ -27,7 +28,7 @@ Z_ClearZone :: proc(zone: ^memzone_t) {
 	block.prev = &zone.blocklist
 	block.next = &zone.blocklist
 	block.user = nil
-	block.size = zone.size - size_of(memzone_t)
+	block.size = i32(zone.size - size_of(memzone_t))
 }
 
 Z_Init :: proc() {
@@ -46,13 +47,15 @@ Z_Init :: proc() {
 	block.prev = &mainzone.blocklist
 	block.next = &mainzone.blocklist
 	block.user = nil
-	block.size = mainzone.size - size_of(memzone_t)
+	block.size = i32(mainzone.size - size_of(memzone_t))
 }
 
-Z_Free :: proc(ptr: rawptr) {
+Z_Free :: proc(ptr: rawptr, loc := #caller_location) {
 	block := (^memblock_t)(uintptr(ptr) - size_of(memblock_t))
 
 	if block.id != ZONEID {
+		fmt.eprintf("Z_Free called from %s:%d in %s\n", loc.file_path, loc.line, loc.procedure)
+		fmt.eprintf("  ptr=%p, block=%p, block.id=0x%x, ZONEID=0x%x, tag=%d, size=%d\n", ptr, block, block.id, ZONEID, block.tag, block.size)
 		I_Error("Z_Free: freed a pointer without ZONEID")
 	}
 
@@ -89,7 +92,7 @@ Z_Free :: proc(ptr: rawptr) {
 }
 
 Z_Malloc :: proc(size_in: int, tag: int, user: rawptr) -> rawptr {
-	size := (size_in + 3) & ~int(3)
+	size := (size_in + 7) & ~int(7)
 	size += size_of(memblock_t)
 
 	base := mainzone.rover
@@ -119,16 +122,16 @@ Z_Malloc :: proc(size_in: int, tag: int, user: rawptr) -> rawptr {
 			rover = rover.next
 		}
 
-		if base.user == nil && base.size >= size {
+		if base.user == nil && int(base.size) >= size {
 			break
 		}
 	}
 
-	extra := base.size - size
+	extra := int(base.size) - size
 
 	if extra > MINFRAGMENT {
 		newblock := (^memblock_t)(uintptr(base) + uintptr(size))
-		newblock.size = extra
+		newblock.size = i32(extra)
 		newblock.user = nil
 		newblock.tag = 0
 		newblock.prev = base
@@ -136,7 +139,7 @@ Z_Malloc :: proc(size_in: int, tag: int, user: rawptr) -> rawptr {
 		newblock.next.prev = newblock
 
 		base.next = newblock
-		base.size = size
+		base.size = i32(size)
 	}
 
 	if user != nil {
@@ -148,7 +151,7 @@ Z_Malloc :: proc(size_in: int, tag: int, user: rawptr) -> rawptr {
 		}
 		base.user = (^rawptr)(uintptr(2))
 	}
-	base.tag = tag
+	base.tag = i32(tag)
 
 	mainzone.rover = base.next
 	base.id = ZONEID
@@ -156,13 +159,13 @@ Z_Malloc :: proc(size_in: int, tag: int, user: rawptr) -> rawptr {
 	return rawptr(uintptr(base) + size_of(memblock_t))
 }
 
-Z_FreeTags :: proc(lowtag: int, hightag: int) {
+Z_FreeTags :: proc(lowtag: int, hightag: int, loc := #caller_location) {
 	block := mainzone.blocklist.next
 	for block != &mainzone.blocklist {
 		next := block.next
 		if block.user != nil {
-			if block.tag >= lowtag && block.tag <= hightag {
-				Z_Free(rawptr(uintptr(block) + size_of(memblock_t)))
+			if int(block.tag) >= lowtag && int(block.tag) <= hightag {
+				Z_Free(rawptr(uintptr(block) + size_of(memblock_t)), loc)
 			}
 		}
 		block = next
@@ -174,7 +177,7 @@ Z_DumpHeap :: proc(lowtag: int, hightag: int) {
 	libc.printf("tag range: %i to %i\n", i32(lowtag), i32(hightag))
 
 	for block := mainzone.blocklist.next; ; block = block.next {
-		if block.tag >= lowtag && block.tag <= hightag {
+		if int(block.tag) >= lowtag && int(block.tag) <= hightag {
 			libc.printf("block:%p    size:%7i    user:%p    tag:%3i\n", block, i32(block.size), block.user, i32(block.tag))
 		}
 
@@ -245,7 +248,7 @@ Z_ChangeTag2 :: proc(ptr: rawptr, tag: int) {
 		I_Error("Z_ChangeTag: an owner is required for purgable blocks")
 	}
 
-	block.tag = tag
+	block.tag = i32(tag)
 }
 
 Z_ChangeTag :: proc(ptr: rawptr, tag: int) {
@@ -260,7 +263,7 @@ Z_FreeMemory :: proc() -> int {
 	free := 0
 	for block := mainzone.blocklist.next; block != &mainzone.blocklist; block = block.next {
 		if block.user == nil || block.tag >= PU_PURGELEVEL {
-			free += block.size
+			free += int(block.size)
 		}
 	}
 	return free

@@ -85,7 +85,7 @@ P_LoadSegs :: proc(lump: int) {
 
 P_LoadSubsectors :: proc(lump: int) {
 	numsubsectors = W_LumpLength(lump) / size_of(mapsubsector_t)
-	subsectors = ([^]subsector_t)(Z_Malloc(numsubsectors * size_of(mapsubsector_t), PU_LEVEL, nil))
+	subsectors = ([^]subsector_t)(Z_Malloc(numsubsectors * size_of(subsector_t), PU_LEVEL, nil))
 	data := W_CacheLumpNum(lump, PU_STATIC)
 
 	ms := ([^]mapsubsector_t)(data)

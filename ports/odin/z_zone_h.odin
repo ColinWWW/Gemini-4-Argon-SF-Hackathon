@@ -11,10 +11,10 @@ PU_PURGELEVEL :: 100
 PU_CACHE      :: 101
 
 memblock_t :: struct {
-	size: int,
+	size: i32,
 	user: ^rawptr,
-	tag:  int,
-	id:   int,
+	tag:  i32,
+	id:   i32,
 	next: ^memblock_t,
 	prev: ^memblock_t,
 }
