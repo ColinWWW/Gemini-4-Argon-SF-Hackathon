@@ -1,0 +1,19 @@
+// Based on id Software's linuxdoom-1.10 (GNU GPL)
+package main
+
+PI :: 3.141592657
+
+FINEANGLES       :: 8192
+FINEMASK         :: FINEANGLES - 1
+ANGLETOFINESHIFT :: 19
+
+ANG45  :: 0x20000000
+ANG90  :: 0x40000000
+ANG180 :: 0x80000000
+ANG270 :: 0xc0000000
+
+SLOPERANGE :: 2048
+SLOPEBITS  :: 11
+DBITS      :: FRACBITS - SLOPEBITS
+
+angle_t :: u32
