@@ -100,7 +100,7 @@ R_InitSpriteDefs :: proc(namelist: [^]cstring) {
 		libc.memset(&sprtemp[0], -1, size_of(sprtemp))
 
 		maxframe = -1
-		intname := (^u32)(namelist[i])^
+		intname := (^u32)(rawptr(namelist[i]))^
 
 		for l := start + 1; l < end; l += 1 {
 			if (^u32)(&lumpinfo[l].name[0])^ == intname {
