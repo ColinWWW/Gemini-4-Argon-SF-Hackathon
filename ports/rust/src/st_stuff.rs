@@ -20,8 +20,8 @@ use crate::st_lib::*;
 use crate::tables::*;
 use crate::v_video::*;
 use crate::w_wad::*;
-use crate::z_zone::*;
 use crate::write_c_str;
+use crate::z_zone::*;
 
 pub const ST_HEIGHT: i32 = 32 * SCREEN_MUL;
 pub const ST_WIDTH: i32 = SCREENWIDTH;
@@ -386,49 +386,49 @@ pub unsafe fn ST_Responder(ev: *mut event_t) -> boolean {
         let key = (*ev).data1 as u8;
         if netgame == 0 {
             if cht_CheckCheat(&mut cheat_god, key) != 0 {
-                (*plr).cheats ^= CF_GODMODE;
-                if (*plr).cheats & CF_GODMODE != 0 {
-                    if !(*plr).mo.is_null() {
-                        (*(*plr).mo).health = 100;
+                (*plyr).cheats ^= CF_GODMODE;
+                if (*plyr).cheats & CF_GODMODE != 0 {
+                    if !(*plyr).mo.is_null() {
+                        (*(*plyr).mo).health = 100;
                     }
-                    (*plr).health = 100;
-                    (*plr).message = b"Degreelessness Mode On\0".as_ptr();
+                    (*plyr).health = 100;
+                    (*plyr).message = b"Degreelessness Mode On\0".as_ptr();
                 } else {
-                    (*plr).message = b"Degreelessness Mode Off\0".as_ptr();
+                    (*plyr).message = b"Degreelessness Mode Off\0".as_ptr();
                 }
             } else if cht_CheckCheat(&mut cheat_ammonokey, key) != 0 {
-                (*plr).armorpoints = 200;
-                (*plr).armortype = 2;
+                (*plyr).armorpoints = 200;
+                (*plyr).armortype = 2;
                 for i in 0..NUMWEAPONS {
-                    (*plr).weaponowned[i] = true_;
+                    (*plyr).weaponowned[i] = true_;
                 }
                 for i in 0..NUMAMMO {
-                    (*plr).ammo[i] = (*plr).maxammo[i];
+                    (*plyr).ammo[i] = (*plyr).maxammo[i];
                 }
-                (*plr).message = b"Ammo (no keys) Added\0".as_ptr();
+                (*plyr).message = b"Ammo (no keys) Added\0".as_ptr();
             } else if cht_CheckCheat(&mut cheat_ammo, key) != 0 {
-                (*plr).armorpoints = 200;
-                (*plr).armortype = 2;
+                (*plyr).armorpoints = 200;
+                (*plyr).armortype = 2;
                 for i in 0..NUMWEAPONS {
-                    (*plr).weaponowned[i] = true_;
+                    (*plyr).weaponowned[i] = true_;
                 }
                 for i in 0..NUMAMMO {
-                    (*plr).ammo[i] = (*plr).maxammo[i];
+                    (*plyr).ammo[i] = (*plyr).maxammo[i];
                 }
                 for i in 0..NUMCARDS {
-                    (*plr).cards[i] = true_;
+                    (*plyr).cards[i] = true_;
                 }
-                (*plr).message = b"Very Happy Ammo Added\0".as_ptr();
+                (*plyr).message = b"Very Happy Ammo Added\0".as_ptr();
             } else if cht_CheckCheat(&mut cheat_mus, key) != 0 {
                 let mut buf = [0u8; 3];
-                (*plr).message = b"Music Change\0".as_ptr();
+                (*plyr).message = b"Music Change\0".as_ptr();
                 cht_GetParam(&mut cheat_mus, buf.as_mut_ptr());
 
                 if gamemode == commercial {
                     let musnum =
                         mus_runnin + ((buf[0] - b'0') as i32) * 10 + ((buf[1] - b'0') as i32) - 1;
                     if (((buf[0] - b'0') as i32) * 10 + ((buf[1] - b'0') as i32)) > 35 {
-                        (*plr).message = b"IMPOSSIBLE SELECTION\0".as_ptr();
+                        (*plyr).message = b"IMPOSSIBLE SELECTION\0".as_ptr();
                     } else {
                         S_ChangeMusic(musnum, 1);
                     }
@@ -436,7 +436,7 @@ pub unsafe fn ST_Responder(ev: *mut event_t) -> boolean {
                     let musnum =
                         mus_e1m1 + ((buf[0] - b'1') as i32) * 9 + ((buf[1] - b'1') as i32);
                     if (((buf[0] - b'1') as i32) * 9 + ((buf[1] - b'1') as i32)) > 31 {
-                        (*plr).message = b"IMPOSSIBLE SELECTION\0".as_ptr();
+                        (*plyr).message = b"IMPOSSIBLE SELECTION\0".as_ptr();
                     } else {
                         S_ChangeMusic(musnum, 1);
                     }
@@ -444,33 +444,33 @@ pub unsafe fn ST_Responder(ev: *mut event_t) -> boolean {
             } else if cht_CheckCheat(&mut cheat_noclip, key) != 0
                 || cht_CheckCheat(&mut cheat_commercial_noclip, key) != 0
             {
-                (*plr).cheats ^= CF_NOCLIP;
-                if (*plr).cheats & CF_NOCLIP != 0 {
-                    (*plr).message = b"No Clipping Mode ON\0".as_ptr();
+                (*plyr).cheats ^= CF_NOCLIP;
+                if (*plyr).cheats & CF_NOCLIP != 0 {
+                    (*plyr).message = b"No Clipping Mode ON\0".as_ptr();
                 } else {
-                    (*plr).message = b"No Clipping Mode OFF\0".as_ptr();
+                    (*plyr).message = b"No Clipping Mode OFF\0".as_ptr();
                 }
             }
 
             for i in 0..6 {
                 if cht_CheckCheat(&mut cheat_powerup[i], key) != 0 {
-                    if (*plr).powers[i] == 0 {
-                        P_GivePower(plr, i as i32);
+                    if (*plyr).powers[i] == 0 {
+                        P_GivePower(plyr, i as i32);
                     } else if i != (pw_strength as usize) {
-                        (*plr).powers[i] = 1;
+                        (*plyr).powers[i] = 1;
                     } else {
-                        (*plr).powers[i] = 0;
+                        (*plyr).powers[i] = 0;
                     }
-                    (*plr).message = b"Power-up Toggled\0".as_ptr();
+                    (*plyr).message = b"Power-up Toggled\0".as_ptr();
                 }
             }
 
             if cht_CheckCheat(&mut cheat_powerup[6], key) != 0 {
-                (*plr).message = b"inVuln, Str, Inviso, Rad, Allmap, or Lite-amp\0".as_ptr();
+                (*plyr).message = b"inVuln, Str, Inviso, Rad, Allmap, or Lite-amp\0".as_ptr();
             } else if cht_CheckCheat(&mut cheat_choppers, key) != 0 {
-                (*plr).weaponowned[wp_chainsaw as usize] = true_;
-                (*plr).powers[pw_invulnerability as usize] = true_;
-                (*plr).message = b"... doesn't suck - GM\0".as_ptr();
+                (*plyr).weaponowned[wp_chainsaw as usize] = true_;
+                (*plyr).powers[pw_invulnerability as usize] = true_;
+                (*plyr).message = b"... doesn't suck - GM\0".as_ptr();
             } else if cht_CheckCheat(&mut cheat_mypos, key) != 0 {
                 let s = format!(
                     "ang=0x{:x};x,y=(0x{:x},0x{:x})",
@@ -479,7 +479,7 @@ pub unsafe fn ST_Responder(ev: *mut event_t) -> boolean {
                     (*players[consoleplayer as usize].mo).y
                 );
                 write_c_str(mypos_buf.as_mut_ptr(), &s);
-                (*plr).message = mypos_buf.as_ptr();
+                (*plyr).message = mypos_buf.as_ptr();
             }
         }
 
@@ -512,7 +512,7 @@ pub unsafe fn ST_Responder(ev: *mut event_t) -> boolean {
                 return false_;
             }
 
-            (*plr).message = b"Changing Level...\0".as_ptr();
+            (*plyr).message = b"Changing Level...\0".as_ptr();
             G_DeferedInitNew(gameskill, epsd, map);
         }
     }
@@ -523,10 +523,10 @@ static mut lastcalc: i32 = 0;
 static mut oldhealth_calc: i32 = -1;
 
 pub unsafe fn ST_calcPainOffset() -> i32 {
-    let health = if (*plr).health > 100 {
+    let health = if (*plyr).health > 100 {
         100
     } else {
-        (*plr).health
+        (*plyr).health
     };
 
     if health != oldhealth_calc {
@@ -541,7 +541,7 @@ static mut priority: i32 = 0;
 
 pub unsafe fn ST_updateFaceWidget() {
     if priority < 10 {
-        if (*plr).health == 0 {
+        if (*plyr).health == 0 {
             priority = 9;
             st_faceindex = ST_DEADFACE as i32;
             st_facecount = 1;
@@ -549,12 +549,12 @@ pub unsafe fn ST_updateFaceWidget() {
     }
 
     if priority < 9 {
-        if (*plr).bonuscount != 0 {
+        if (*plyr).bonuscount != 0 {
             let mut doevilgrin = false;
             for i in 0..NUMWEAPONS {
-                if oldweaponsowned[i] != (*plr).weaponowned[i] {
+                if oldweaponsowned[i] != (*plyr).weaponowned[i] {
                     doevilgrin = true;
-                    oldweaponsowned[i] = (*plr).weaponowned[i];
+                    oldweaponsowned[i] = (*plyr).weaponowned[i];
                 }
             }
             if doevilgrin {
@@ -566,23 +566,23 @@ pub unsafe fn ST_updateFaceWidget() {
     }
 
     if priority < 8 {
-        if (*plr).damagecount != 0 && !(*plr).attacker.is_null() && (*plr).attacker != (*plr).mo {
+        if (*plyr).damagecount != 0 && !(*plyr).attacker.is_null() && (*plyr).attacker != (*plyr).mo {
             priority = 7;
-            if (*plr).health - st_oldhealth > ST_MUCHPAIN {
+            if (*plyr).health - st_oldhealth > ST_MUCHPAIN {
                 st_facecount = ST_TURNCOUNT;
                 st_faceindex = ST_calcPainOffset() + (ST_OUCHOFFSET as i32);
             } else {
                 let badguyangle = R_PointToAngle2(
-                    (*(*plr).mo).x,
-                    (*(*plr).mo).y,
-                    (*(*plr).attacker).x,
-                    (*(*plr).attacker).y,
+                    (*(*plyr).mo).x,
+                    (*(*plyr).mo).y,
+                    (*(*plyr).attacker).x,
+                    (*(*plyr).attacker).y,
                 );
-                let (diffang, i) = if badguyangle > (*(*plr).mo).angle {
-                    let d = badguyangle.wrapping_sub((*(*plr).mo).angle);
+                let (diffang, i) = if badguyangle > (*(*plyr).mo).angle {
+                    let d = badguyangle.wrapping_sub((*(*plyr).mo).angle);
                     (d, d > ANG180)
                 } else {
-                    let d = (*(*plr).mo).angle.wrapping_sub(badguyangle);
+                    let d = (*(*plyr).mo).angle.wrapping_sub(badguyangle);
                     (d, d <= ANG180)
                 };
 
@@ -601,8 +601,8 @@ pub unsafe fn ST_updateFaceWidget() {
     }
 
     if priority < 7 {
-        if (*plr).damagecount != 0 {
-            if (*plr).health - st_oldhealth > ST_MUCHPAIN {
+        if (*plyr).damagecount != 0 {
+            if (*plyr).health - st_oldhealth > ST_MUCHPAIN {
                 priority = 7;
                 st_facecount = ST_TURNCOUNT;
                 st_faceindex = ST_calcPainOffset() + (ST_OUCHOFFSET as i32);
@@ -615,7 +615,7 @@ pub unsafe fn ST_updateFaceWidget() {
     }
 
     if priority < 6 {
-        if (*plr).attackdown != 0 {
+        if (*plyr).attackdown != 0 {
             if lastattackdown == -1 {
                 lastattackdown = ST_RAMPAGEDELAY;
             } else {
@@ -633,7 +633,7 @@ pub unsafe fn ST_updateFaceWidget() {
     }
 
     if priority < 5 {
-        if ((*plr).cheats & CF_GODMODE != 0) || (*plr).powers[pw_invulnerability as usize] != 0 {
+        if ((*plyr).cheats & CF_GODMODE != 0) || (*plyr).powers[pw_invulnerability as usize] != 0 {
             priority = 4;
             st_faceindex = ST_GODFACE as i32;
             st_facecount = 1;
@@ -652,16 +652,16 @@ pub unsafe fn ST_updateFaceWidget() {
 static mut largeammo: i32 = 1994;
 
 pub unsafe fn ST_updateWidgets() {
-    if weaponinfo[(*plr).readyweapon as usize].ammo == am_noammo {
+    if weaponinfo[(*plyr).readyweapon as usize].ammo == am_noammo {
         w_ready.num = &mut largeammo;
     } else {
-        w_ready.num = &mut (*plr).ammo[weaponinfo[(*plr).readyweapon as usize].ammo as usize];
+        w_ready.num = &mut (*plyr).ammo[weaponinfo[(*plyr).readyweapon as usize].ammo as usize];
     }
-    w_ready.data = (*plr).readyweapon;
+    w_ready.data = (*plyr).readyweapon;
 
     for i in 0..3 {
-        keyboxes[i] = if (*plr).cards[i] != 0 { i as i32 } else { -1 };
-        if (*plr).cards[i + 3] != 0 {
+        keyboxes[i] = if (*plyr).cards[i] != 0 { i as i32 } else { -1 };
+        if (*plyr).cards[i + 3] != 0 {
             keyboxes[i] = (i + 3) as i32;
         }
     }
@@ -675,9 +675,9 @@ pub unsafe fn ST_updateWidgets() {
 
     for i in 0..MAXPLAYERS {
         if i != (consoleplayer as usize) {
-            st_fragscount += (*plr).frags[i];
+            st_fragscount += (*plyr).frags[i];
         } else {
-            st_fragscount -= (*plr).frags[i];
+            st_fragscount -= (*plyr).frags[i];
         }
     }
 
@@ -691,16 +691,16 @@ pub unsafe fn ST_Ticker() {
     st_clock = st_clock.wrapping_add(1);
     st_randomnumber = M_Random();
     ST_updateWidgets();
-    st_oldhealth = (*plr).health;
+    st_oldhealth = (*plyr).health;
 }
 
 static mut st_palette: i32 = 0;
 
 pub unsafe fn ST_doPaletteStuff() {
-    let mut cnt = (*plr).damagecount;
+    let mut cnt = (*plyr).damagecount;
 
-    if (*plr).powers[pw_strength as usize] != 0 {
-        let bzc = 12 - ((*plr).powers[pw_strength as usize] >> 6);
+    if (*plyr).powers[pw_strength as usize] != 0 {
+        let bzc = 12 - ((*plyr).powers[pw_strength as usize] >> 6);
         if bzc > cnt {
             cnt = bzc;
         }
@@ -712,14 +712,14 @@ pub unsafe fn ST_doPaletteStuff() {
             p = NUMREDPALS - 1;
         }
         p + STARTREDPALS
-    } else if (*plr).bonuscount != 0 {
-        let mut p = ((*plr).bonuscount + 7) >> 3;
+    } else if (*plyr).bonuscount != 0 {
+        let mut p = ((*plyr).bonuscount + 7) >> 3;
         if p >= NUMBONUSPALS {
             p = NUMBONUSPALS - 1;
         }
         p + STARTBONUSPALS
-    } else if (*plr).powers[pw_ironfeet as usize] > 4 * 32
-        || ((*plr).powers[pw_ironfeet as usize] & 8 != 0)
+    } else if (*plyr).powers[pw_ironfeet as usize] > 4 * 32
+        || ((*plyr).powers[pw_ironfeet as usize] & 8 != 0)
     {
         RADIATIONPAL
     } else {
@@ -880,7 +880,7 @@ pub unsafe fn ST_unloadData() {
 
 pub unsafe fn ST_initData() {
     st_firsttime = true_;
-    plr = &mut players[consoleplayer as usize];
+    plyr = &mut players[consoleplayer as usize];
 
     st_clock = 0;
     st_chatstate = StartChatState;
@@ -897,7 +897,7 @@ pub unsafe fn ST_initData() {
     st_oldhealth = -1;
 
     for i in 0..NUMWEAPONS {
-        oldweaponsowned[i] = (*plr).weaponowned[i];
+        oldweaponsowned[i] = (*plyr).weaponowned[i];
     }
 
     for i in 0..3 {
@@ -908,9 +908,9 @@ pub unsafe fn ST_initData() {
 }
 
 pub unsafe fn ST_createWidgets() {
-    let ammo_idx = weaponinfo[(*plr).readyweapon as usize].ammo as usize;
+    let ammo_idx = weaponinfo[(*plyr).readyweapon as usize].ammo as usize;
     let ammo_ptr = if ammo_idx < NUMAMMO {
-        &mut (*plr).ammo[ammo_idx] as *mut i32
+        &mut (*plyr).ammo[ammo_idx] as *mut i32
     } else {
         &mut largeammo as *mut i32
     };
@@ -924,14 +924,14 @@ pub unsafe fn ST_createWidgets() {
         &mut st_statusbaron,
         ST_AMMOWIDTH,
     );
-    w_ready.data = (*plr).readyweapon;
+    w_ready.data = (*plyr).readyweapon;
 
     STlib_initPercent(
         &mut w_health,
         ST_HEALTHX,
         ST_HEALTHY,
         tallnum.as_mut_ptr(),
-        &mut (*plr).health,
+        &mut (*plyr).health,
         &mut st_statusbaron,
         tallpercent,
     );
@@ -951,7 +951,7 @@ pub unsafe fn ST_createWidgets() {
             ST_ARMSX + ((i as i32) % 3) * ST_ARMSXSPACE,
             ST_ARMSY + ((i as i32) / 3) * ST_ARMSYSPACE,
             arms[i].as_mut_ptr(),
-            &mut (*plr).weaponowned[i + 1] as *mut i32,
+            &mut (*plyr).weaponowned[i + 1] as *mut i32,
             &mut st_armson,
         );
     }
@@ -980,7 +980,7 @@ pub unsafe fn ST_createWidgets() {
         ST_ARMORX,
         ST_ARMORY,
         tallnum.as_mut_ptr(),
-        &mut (*plr).armorpoints,
+        &mut (*plyr).armorpoints,
         &mut st_statusbaron,
         tallpercent,
     );
@@ -1015,7 +1015,7 @@ pub unsafe fn ST_createWidgets() {
         ST_AMMO0X,
         ST_AMMO0Y,
         shortnum.as_mut_ptr(),
-        &mut (*plr).ammo[0],
+        &mut (*plyr).ammo[0],
         &mut st_statusbaron,
         ST_AMMO0WIDTH,
     );
@@ -1024,7 +1024,7 @@ pub unsafe fn ST_createWidgets() {
         ST_AMMO1X,
         ST_AMMO1Y,
         shortnum.as_mut_ptr(),
-        &mut (*plr).ammo[1],
+        &mut (*plyr).ammo[1],
         &mut st_statusbaron,
         ST_AMMO1WIDTH,
     );
@@ -1033,7 +1033,7 @@ pub unsafe fn ST_createWidgets() {
         ST_AMMO2X,
         ST_AMMO2Y,
         shortnum.as_mut_ptr(),
-        &mut (*plr).ammo[2],
+        &mut (*plyr).ammo[2],
         &mut st_statusbaron,
         ST_AMMO2WIDTH,
     );
@@ -1042,7 +1042,7 @@ pub unsafe fn ST_createWidgets() {
         ST_AMMO3X,
         ST_AMMO3Y,
         shortnum.as_mut_ptr(),
-        &mut (*plr).ammo[3],
+        &mut (*plyr).ammo[3],
         &mut st_statusbaron,
         ST_AMMO3WIDTH,
     );
@@ -1052,7 +1052,7 @@ pub unsafe fn ST_createWidgets() {
         ST_MAXAMMO0X,
         ST_MAXAMMO0Y,
         shortnum.as_mut_ptr(),
-        &mut (*plr).maxammo[0],
+        &mut (*plyr).maxammo[0],
         &mut st_statusbaron,
         ST_MAXAMMO0WIDTH,
     );
@@ -1061,7 +1061,7 @@ pub unsafe fn ST_createWidgets() {
         ST_MAXAMMO1X,
         ST_MAXAMMO1Y,
         shortnum.as_mut_ptr(),
-        &mut (*plr).maxammo[1],
+        &mut (*plyr).maxammo[1],
         &mut st_statusbaron,
         ST_MAXAMMO1WIDTH,
     );
@@ -1070,7 +1070,7 @@ pub unsafe fn ST_createWidgets() {
         ST_MAXAMMO2X,
         ST_MAXAMMO2Y,
         shortnum.as_mut_ptr(),
-        &mut (*plr).maxammo[2],
+        &mut (*plyr).maxammo[2],
         &mut st_statusbaron,
         ST_MAXAMMO2WIDTH,
     );
@@ -1079,7 +1079,7 @@ pub unsafe fn ST_createWidgets() {
         ST_MAXAMMO3X,
         ST_MAXAMMO3Y,
         shortnum.as_mut_ptr(),
-        &mut (*plr).maxammo[3],
+        &mut (*plyr).maxammo[3],
         &mut st_statusbaron,
         ST_MAXAMMO3WIDTH,
     );
