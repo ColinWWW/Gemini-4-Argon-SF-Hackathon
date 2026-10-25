@@ -104,6 +104,11 @@ Rules:
 2. Fix the reported compiler error(s) faithfully.
 3. Keep all procedures, globals, and types intact. Do NOT delete or stub code.
 4. Output the complete updated file content inside a single ```odin ... ``` code block.
+5. In Odin, `libc.sprintf` is not in `core:c/libc`. Replace with `libc.snprintf(dest, size, ...)` or `fmt.bprintf(buf[:], ...)`. Formatted strings must match C byte-for-byte! Note that C's "%.3d" is zero-padded 3-digit integer, which in Odin fmt is "%03d".
+6. In Odin, raw pointers `^T` cannot be indexed with `p[i]`. Use multi-pointers `[^]T` (or cast `([^]T)(p)[i]`).
+7. In Odin, `libc.fseek` takes `(stream: ^libc.FILE, offset: libc.long, whence: libc.Whence)`. Pass `.SET`, `.CUR`, or `.END` for whence, and cast offset to `libc.long(...)`.
+8. `MAXINT` is `max(i32)`.
+9. Comparing `sfxenum_t` to 0: compare with `.sfx_None` or `sfxenum_t(0)`.
 """
 
     resp = client.models.generate_content(
