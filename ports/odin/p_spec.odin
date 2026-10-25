@@ -535,7 +535,7 @@ P_UpdateSpecials :: proc() {
 		if buttonlist[i].btimer != 0 {
 			buttonlist[i].btimer -= 1
 			if buttonlist[i].btimer == 0 {
-				switch buttonlist[i].where {
+				switch buttonlist[i].where_ {
 				case .top:
 					sides[buttonlist[i].line.sidenum[0]].toptexture = i16(buttonlist[i].btexture)
 				case .middle:
