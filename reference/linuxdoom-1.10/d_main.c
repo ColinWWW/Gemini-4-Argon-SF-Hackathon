@@ -608,9 +608,25 @@ void IdentifyVersion (void)
     doom2fwad = malloc(strlen(doomwaddir)+1+10+1);
     sprintf(doom2fwad, "%s/doom2f.wad", doomwaddir);
 
+    int iwad_p = M_CheckParm("-iwad");
+    if (iwad_p && iwad_p < myargc - 1)
+    {
+        gamemode = shareware;
+        D_AddFile(myargv[iwad_p + 1]);
+        home = getenv("HOME");
+        if (!home)
+            home = getenv("USERPROFILE");
+        if (!home)
+            home = ".";
+        sprintf(basedefault, "%s/.doomrc", home);
+        return;
+    }
+
     home = getenv("HOME");
     if (!home)
-      I_Error("Please set $HOME to your home directory");
+        home = getenv("USERPROFILE");
+    if (!home)
+        home = ".";
     sprintf(basedefault, "%s/.doomrc", home);
 #endif
 
@@ -877,7 +893,11 @@ void D_DoomMain (void)
     if (M_CheckParm("-cdrom"))
     {
 	printf(D_CDROM);
+#if defined(_WIN32)
+	mkdir("c:\\doomdata");
+#else
 	mkdir("c:\\doomdata",0);
+#endif
 	strcpy (basedefault,"c:/doomdata/default.cfg");
     }	
     
