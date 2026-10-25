@@ -185,6 +185,6 @@ S_sfx: [int(sfxenum_t.NUMSFX)]sfxinfo_t = {
 }
 
 @(init)
-_init_sounds :: proc() {
+_init_sounds :: proc "contextless" () {
 	S_sfx[int(sfxenum_t.sfx_chgun)].link = &S_sfx[int(sfxenum_t.sfx_pistol)]
 }
