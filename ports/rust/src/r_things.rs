@@ -555,7 +555,7 @@ pub unsafe fn R_DrawPSprite(psp: *mut pspdef_t) {
 
 pub unsafe fn R_DrawPlayerSprites() {
     let mut lightnum =
-        (((*(*(*viewplayer).mo).subsector).sector).lightlevel as i32 >> LIGHTSEGSHIFT)
+        ((*(*(*(*viewplayer).mo).subsector).sector).lightlevel as i32 >> LIGHTSEGSHIFT)
             + extralight;
 
     if lightnum < 0 {
