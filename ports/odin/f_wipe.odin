@@ -90,6 +90,10 @@ wipe_doMelt :: proc(width: int, height: int, ticks: int) -> int {
 	w := width / 2
 	t := ticks
 
+	scr_start := ([^]i16)(wipe_scr_start)
+	scr_end := ([^]i16)(wipe_scr_end)
+	scr := ([^]i16)(wipe_scr)
+
 	for t > 0 {
 		t -= 1
 		for i := 0; i < w; i += 1 {
@@ -101,8 +105,8 @@ wipe_doMelt :: proc(width: int, height: int, ticks: int) -> int {
 				if wipe_y[i] + dy >= height {
 					dy = height - wipe_y[i]
 				}
-				s := &(([^]i16)(wipe_scr_end))[i * height + wipe_y[i]]
-				d := &(([^]i16)(wipe_scr))[wipe_y[i] * w + i]
+				s: [^]i16 = &scr_end[i * height + wipe_y[i]]
+				d: [^]i16 = &scr[wipe_y[i] * w + i]
 				idx := 0
 				for j := dy; j != 0; j -= 1 {
 					d[idx] = s[0]
@@ -110,8 +114,8 @@ wipe_doMelt :: proc(width: int, height: int, ticks: int) -> int {
 					idx += w
 				}
 				wipe_y[i] += dy
-				s = &(([^]i16)(wipe_scr_start))[i * height]
-				d = &(([^]i16)(wipe_scr))[wipe_y[i] * w + i]
+				s = &scr_start[i * height]
+				d = &scr[wipe_y[i] * w + i]
 				idx = 0
 				for j := height - wipe_y[i]; j != 0; j -= 1 {
 					d[idx] = s[0]
