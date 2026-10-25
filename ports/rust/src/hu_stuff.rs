@@ -221,6 +221,7 @@ pub unsafe fn HU_Init() {
 
     let mut j = HU_FONTSTART as i32;
     for i in 0..HU_FONTSIZE {
+        // Formatted lump name matches C sprintf(buffer, "STCFN%.3d", j) byte-for-byte
         let name = format!("STCFN{:03}", j);
         j += 1;
         hu_font[i] = W_CacheLumpNameStr(&name, PU_STATIC) as *mut patch_t;
