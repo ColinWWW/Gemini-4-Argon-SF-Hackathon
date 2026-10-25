@@ -460,9 +460,9 @@ FindResponseFile :: proc() {
 				libc.exit(1)
 			}
 			libc.printf("Found response file %s!\n", &arg_bytes[1])
-			libc.fseek(handle, 0, libc.SEEK_END)
+			libc.fseek(handle, 0, .END)
 			size := int(libc.ftell(handle))
-			libc.fseek(handle, 0, libc.SEEK_SET)
+			libc.fseek(handle, 0, .SET)
 			file := ([^]u8)(libc.malloc(uint(size)))
 			libc.fread(file, uint(size), 1, handle)
 			libc.fclose(handle)
