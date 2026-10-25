@@ -5,6 +5,7 @@ use crate::doomdef::*;
 use crate::doomstat::*;
 use crate::doomtype::*;
 use crate::dstrings::*;
+use crate::g_game::*;
 use crate::hu_stuff::*;
 use crate::info::*;
 use crate::m_swap::*;
