@@ -302,9 +302,9 @@ M_ReadSaveStrings :: proc() {
 
 	for i := 0; i < load_end; i += 1 {
 		if M_CheckParm("-cdrom") != 0 {
-			libc.sprintf(&name[0], "c:\\doomdata\\" + SAVEGAMENAME + "%d.dsg", i32(i))
+			libc.snprintf(&name[0], len(name), "c:\\doomdata\\" + SAVEGAMENAME + "%d.dsg", i32(i))
 		} else {
-			libc.sprintf(&name[0], SAVEGAMENAME + "%d.dsg", i32(i))
+			libc.snprintf(&name[0], len(name), SAVEGAMENAME + "%d.dsg", i32(i))
 		}
 
 		f := libc.fopen(cstring(&name[0]), "rb")
@@ -342,9 +342,9 @@ M_DrawSaveLoadBorder :: proc(x_in: int, y: int) {
 M_LoadSelect :: proc(choice: int) {
 	name: [256]u8
 	if M_CheckParm("-cdrom") != 0 {
-		libc.sprintf(&name[0], "c:\\doomdata\\" + SAVEGAMENAME + "%d.dsg", i32(choice))
+		libc.snprintf(&name[0], len(name), "c:\\doomdata\\" + SAVEGAMENAME + "%d.dsg", i32(choice))
 	} else {
-		libc.sprintf(&name[0], SAVEGAMENAME + "%d.dsg", i32(choice))
+		libc.snprintf(&name[0], len(name), SAVEGAMENAME + "%d.dsg", i32(choice))
 	}
 	G_LoadGame(cstring(&name[0]))
 	M_ClearMenus()
@@ -430,7 +430,7 @@ M_QuickSave :: proc() {
 		quickSaveSlot = -2
 		return
 	}
-	libc.sprintf(&m_tempstring[0], QSPROMPT, &savegamestrings[quickSaveSlot][0])
+	libc.snprintf(&m_tempstring[0], len(m_tempstring), QSPROMPT, &savegamestrings[quickSaveSlot][0])
 	M_StartMessage(cstring(&m_tempstring[0]), M_QuickSaveResponse, true)
 }
 
@@ -451,7 +451,7 @@ M_QuickLoad :: proc() {
 		M_StartMessage(QSAVESPOT, nil, false)
 		return
 	}
-	libc.sprintf(&m_tempstring[0], QLPROMPT, &savegamestrings[quickSaveSlot][0])
+	libc.snprintf(&m_tempstring[0], len(m_tempstring), QLPROMPT, &savegamestrings[quickSaveSlot][0])
 	M_StartMessage(cstring(&m_tempstring[0]), M_QuickLoadResponse, true)
 }
 
@@ -649,9 +649,9 @@ M_QuitResponse :: proc(ch: int) {
 
 M_QuitDOOM :: proc(choice: int) {
 	if language != .english {
-		libc.sprintf(&endstring[0], "%s\n\n" + DOSY, endmsg[0])
+		libc.snprintf(&endstring[0], len(endstring), "%s\n\n" + DOSY, endmsg[0])
 	} else {
-		libc.sprintf(&endstring[0], "%s\n\n" + DOSY, endmsg[(gametic % (NUM_QUITMESSAGES - 2)) + 1])
+		libc.snprintf(&endstring[0], len(endstring), "%s\n\n" + DOSY, endmsg[(gametic % (NUM_QUITMESSAGES - 2)) + 1])
 	}
 	M_StartMessage(cstring(&endstring[0]), M_QuitResponse, true)
 }
