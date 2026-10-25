@@ -66,7 +66,7 @@ R_DrawColumn :: proc() {
 		I_Error("R_DrawColumn: %i to %i at %i", i32(dc_yl), i32(dc_yh), i32(dc_x))
 	}
 
-	dest := &ylookup[dc_yl][columnofs[dc_x]]
+	dest: [^]byte = &ylookup[dc_yl][columnofs[dc_x]]
 
 	fracstep := dc_iscale
 	frac := dc_texturemid + fixed_t(dc_yl - centery) * fracstep
@@ -94,8 +94,8 @@ R_DrawColumnLow :: proc() {
 
 	dc_x <<= 1
 
-	dest := &ylookup[dc_yl][columnofs[dc_x]]
-	dest2 := &ylookup[dc_yl][columnofs[dc_x + 1]]
+	dest: [^]byte = &ylookup[dc_yl][columnofs[dc_x]]
+	dest2: [^]byte = &ylookup[dc_yl][columnofs[dc_x + 1]]
 
 	fracstep := dc_iscale
 	frac := dc_texturemid + fixed_t(dc_yl - centery) * fracstep
@@ -131,7 +131,7 @@ R_DrawFuzzColumn :: proc() {
 		I_Error("R_DrawFuzzColumn: %i to %i at %i", i32(dc_yl), i32(dc_yh), i32(dc_x))
 	}
 
-	dest := &ylookup[dc_yl][columnofs[dc_x]]
+	dest: [^]byte = &ylookup[dc_yl][columnofs[dc_x]]
 
 	fracstep := dc_iscale
 	frac := dc_texturemid + fixed_t(dc_yl - centery) * fracstep
@@ -165,7 +165,7 @@ R_DrawTranslatedColumn :: proc() {
 		I_Error("R_DrawColumn: %i to %i at %i", i32(dc_yl), i32(dc_yh), i32(dc_x))
 	}
 
-	dest := &ylookup[dc_yl][columnofs[dc_x]]
+	dest: [^]byte = &ylookup[dc_yl][columnofs[dc_x]]
 
 	fracstep := dc_iscale
 	frac := dc_texturemid + fixed_t(dc_yl - centery) * fracstep
@@ -206,7 +206,7 @@ R_DrawSpan :: proc() {
 	xfrac := ds_xfrac
 	yfrac := ds_yfrac
 
-	dest := &ylookup[ds_y][columnofs[ds_x1]]
+	dest: [^]byte = &ylookup[ds_y][columnofs[ds_x1]]
 
 	count := ds_x2 - ds_x1
 
@@ -235,7 +235,7 @@ R_DrawSpanLow :: proc() {
 	ds_x1 <<= 1
 	ds_x2 <<= 1
 
-	dest := &ylookup[ds_y][columnofs[ds_x1]]
+	dest: [^]byte = &ylookup[ds_y][columnofs[ds_x1]]
 
 	count := ds_x2 - ds_x1
 	for {
