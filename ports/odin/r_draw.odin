@@ -138,7 +138,7 @@ R_DrawFuzzColumn :: proc() {
 
 	for {
 		fo := fuzzoffset[fuzzpos]
-		sample := (^byte)(int(uintptr(dest)) + fo)^
+		sample := (^byte)(uintptr(int(uintptr(dest)) + fo))^
 		dest[0] = colormaps[6 * 256 + int(sample)]
 
 		fuzzpos += 1
