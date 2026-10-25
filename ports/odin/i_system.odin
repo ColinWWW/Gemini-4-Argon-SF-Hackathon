@@ -2,6 +2,7 @@
 package main
 
 import "core:c/libc"
+import "core:fmt"
 
 when ODIN_OS == .Windows {
 	foreign import crt "system:libucrt.lib"
@@ -87,10 +88,16 @@ I_AllocLow :: proc(length: int) -> [^]byte {
 	return mem
 }
 
-I_Error :: proc(error: cstring, #c_vararg args: ..any) {
-	libc.fprintf(libc.stderr, "Error: ")
-	libc.fprintf(libc.stderr, error, ..args)
-	libc.fprintf(libc.stderr, "\n")
+I_Error :: proc(error: cstring, args: ..any) {
+	fmt.eprint("Error: ")
+	if error != nil {
+		if len(args) > 0 {
+			fmt.eprintf(string(error), ..args)
+		} else {
+			fmt.eprint(string(error))
+		}
+	}
+	fmt.eprintln()
 	libc.fflush(libc.stderr)
 
 	if demorecording {
