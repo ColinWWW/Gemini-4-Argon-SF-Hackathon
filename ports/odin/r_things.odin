@@ -163,7 +163,7 @@ R_ClearSprites :: proc() {
 }
 
 R_NewVisSprite :: proc() -> ^vissprite_t {
-	if vissprite_p == &vissprites[MAXVISSPRITES] {
+	if uintptr(vissprite_p) >= uintptr(&vissprites[0]) + uintptr(size_of(vissprites)) {
 		return &overflowsprite
 	}
 	res := &vissprite_p[0]
