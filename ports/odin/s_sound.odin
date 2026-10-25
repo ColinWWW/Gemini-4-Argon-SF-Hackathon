@@ -267,7 +267,7 @@ S_ChangeMusic :: proc(musicnum: int, looping: int) {
 	S_StopMusic()
 
 	if music.lumpnum == 0 {
-		libc.sprintf(&namebuf[0], "d_%s", music.name)
+		libc.snprintf(&namebuf[0], size_of(namebuf), "d_%s", music.name)
 		music.lumpnum = W_GetNumForName(cstring(&namebuf[0]))
 	}
 
