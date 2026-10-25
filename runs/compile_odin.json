@@ -1,0 +1,379 @@
+{
+  "total_attempts": 41,
+  "status": "compiled",
+  "completed_at": "2026-10-25T14:35:04.729988",
+  "attempts": [
+    {
+      "attempt": 1,
+      "timestamp": "2026-10-25T13:57:45.912098",
+      "file": "p_spec_h.odin",
+      "line": 61,
+      "error": "Syntax Error: Expected 'identifier', got 'where' ",
+      "tokens": {
+        "prompt_tokens": 1696,
+        "candidates_tokens": 1287,
+        "total_tokens": 5394
+      }
+    },
+    {
+      "attempt": 2,
+      "timestamp": "2026-10-25T14:01:02.020568",
+      "file": "p_switch.odin",
+      "line": 87,
+      "error": "Syntax Error: Expected a selector ",
+      "tokens": {
+        "prompt_tokens": 4261,
+        "candidates_tokens": 4048,
+        "total_tokens": 31150
+      }
+    },
+    {
+      "attempt": 4,
+      "timestamp": "2026-10-25T14:04:49.151646",
+      "file": "p_spec.odin",
+      "line": 538,
+      "error": "Syntax Error: Expected a selector ",
+      "tokens": {
+        "prompt_tokens": 6865,
+        "candidates_tokens": 6670,
+        "total_tokens": 20315
+      }
+    },
+    {
+      "attempt": 5,
+      "timestamp": "2026-10-25T14:06:13.265218",
+      "file": "am_map.odin",
+      "line": 58,
+      "error": "Error: Cannot cast '0.2 * f64(FRACUNIT)' as 'i32' from 'f64' ",
+      "tokens": {
+        "prompt_tokens": 11257,
+        "candidates_tokens": 9911,
+        "total_tokens": 25279
+      }
+    },
+    {
+      "attempt": 6,
+      "timestamp": "2026-10-25T14:07:17.747576",
+      "file": "sounds.odin",
+      "line": 75,
+      "error": "Error: Illegal declaration cycle of `S_sfx` ",
+      "tokens": {
+        "prompt_tokens": 5254,
+        "candidates_tokens": 4685,
+        "total_tokens": 14797
+      }
+    },
+    {
+      "attempt": 7,
+      "timestamp": "2026-10-25T14:09:00.364831",
+      "file": "r_draw.odin",
+      "line": 75,
+      "error": "Error: Cannot index 'dest' of type '^u8' ",
+      "tokens": {
+        "prompt_tokens": 4240,
+        "candidates_tokens": 3803,
+        "total_tokens": 19280
+      }
+    },
+    {
+      "attempt": 8,
+      "timestamp": "2026-10-25T14:09:36.239636",
+      "file": "i_system.odin",
+      "line": 90,
+      "error": "Error: Calling convention does not support #c_vararg ",
+      "tokens": {
+        "prompt_tokens": 1937,
+        "candidates_tokens": 1284,
+        "total_tokens": 6485
+      }
+    },
+    {
+      "attempt": 9,
+      "timestamp": "2026-10-25T14:10:49.902430",
+      "file": "f_wipe.odin",
+      "line": 108,
+      "error": "Error: Cannot index 'd' of type '^i16' ",
+      "tokens": {
+        "prompt_tokens": 2414,
+        "candidates_tokens": 1918,
+        "total_tokens": 15277
+      }
+    },
+    {
+      "attempt": 10,
+      "timestamp": "2026-10-25T14:12:33.613281",
+      "file": "d_main.odin",
+      "line": 202,
+      "error": "Error: 'sprintf' is not declared by 'libc' ",
+      "tokens": {
+        "prompt_tokens": 8695,
+        "candidates_tokens": 7705,
+        "total_tokens": 25341
+      }
+    },
+    {
+      "attempt": 11,
+      "timestamp": "2026-10-25T14:13:07.298658",
+      "file": "m_misc.odin",
+      "line": 50,
+      "error": "Error: Cannot convert untyped value 'libc.SEEK_END' to 'Whence' from 'untyped integer' ",
+      "tokens": {
+        "prompt_tokens": 3948,
+        "candidates_tokens": 3254,
+        "total_tokens": 9007
+      }
+    },
+    {
+      "attempt": 11,
+      "timestamp": "2026-10-25T14:15:55.295788",
+      "file": "w_wad.odin",
+      "line": 38,
+      "error": "Error: Cannot index 'src' of type '^u8' ",
+      "tokens": {
+        "prompt_tokens": 4323,
+        "candidates_tokens": 3069,
+        "total_tokens": 7392
+      }
+    },
+    {
+      "attempt": 12,
+      "timestamp": "2026-10-25T14:16:28.718906",
+      "file": "r_things.odin",
+      "line": 185,
+      "error": "Error: Cannot cast 'int(uintptr(mfloorclip)) + dc_x * size_of(i16)' as '^i16' from 'int' ",
+      "tokens": {
+        "prompt_tokens": 7422,
+        "candidates_tokens": 6003,
+        "total_tokens": 13425
+      }
+    },
+    {
+      "attempt": 13,
+      "timestamp": "2026-10-25T14:16:48.698017",
+      "file": "w_wad.odin",
+      "line": 80,
+      "error": "Error: Undeclared name 'SEEK_END' for type 'Whence' ",
+      "tokens": {
+        "prompt_tokens": 4019,
+        "candidates_tokens": 3109,
+        "total_tokens": 7128
+      }
+    },
+    {
+      "attempt": 15,
+      "timestamp": "2026-10-25T14:17:24.653939",
+      "file": "w_wad.odin",
+      "line": 38,
+      "error": "Error: Cannot index 'src' of type '^u8' ",
+      "tokens": {
+        "prompt_tokens": 4177,
+        "candidates_tokens": 3163,
+        "total_tokens": 7340
+      }
+    },
+    {
+      "attempt": 16,
+      "timestamp": "2026-10-25T14:17:55.447999",
+      "file": "r_things.odin",
+      "line": 103,
+      "error": "Error: Cannot cast 'namelist[i]' as '^u32' from 'cstring' ",
+      "tokens": {
+        "prompt_tokens": 6746,
+        "candidates_tokens": 5966,
+        "total_tokens": 12712
+      }
+    },
+    {
+      "attempt": 18,
+      "timestamp": "2026-10-25T14:18:43.874977",
+      "file": "p_maputl.odin",
+      "line": 231,
+      "error": "Error: Cannot index 'list' of type '^i16' ",
+      "tokens": {
+        "prompt_tokens": 5172,
+        "candidates_tokens": 4351,
+        "total_tokens": 9523
+      }
+    },
+    {
+      "attempt": 19,
+      "timestamp": "2026-10-25T14:18:59.650686",
+      "file": "p_user.odin",
+      "line": 105,
+      "error": "Error: Cannot cast '-i32(ANG5)' as 'u32' from 'i32' ",
+      "tokens": {
+        "prompt_tokens": 3187,
+        "candidates_tokens": 2266,
+        "total_tokens": 5453
+      }
+    },
+    {
+      "attempt": 20,
+      "timestamp": "2026-10-25T14:19:16.517166",
+      "file": "p_user.odin",
+      "line": 105,
+      "error": "Error: Cannot convert numeric value '-59625323' from '(0 - ANG5)' to 'u32' from 'untyped integer' ",
+      "tokens": {
+        "prompt_tokens": 3156,
+        "candidates_tokens": 2389,
+        "total_tokens": 5545
+      }
+    },
+    {
+      "attempt": 22,
+      "timestamp": "2026-10-25T14:20:40.302125",
+      "file": "m_menu.odin",
+      "line": 305,
+      "error": "Error: 'sprintf' is not declared by 'libc' ",
+      "tokens": {
+        "prompt_tokens": 12513,
+        "candidates_tokens": 11038,
+        "total_tokens": 23551
+      }
+    },
+    {
+      "attempt": 23,
+      "timestamp": "2026-10-25T14:20:58.810712",
+      "file": "p_user.odin",
+      "line": 105,
+      "error": "Error: Numeric value '-59625323' from 'u32(0) - ANG5' cannot be represented by 'u32' ",
+      "tokens": {
+        "prompt_tokens": 3173,
+        "candidates_tokens": 2886,
+        "total_tokens": 6059
+      }
+    },
+    {
+      "attempt": 24,
+      "timestamp": "2026-10-25T14:21:25.791839",
+      "file": "f_finale.odin",
+      "line": 253,
+      "error": "Error: Cannot convert untyped value '0' to 'sfxenum_t' from 'untyped integer' ",
+      "tokens": {
+        "prompt_tokens": 5886,
+        "candidates_tokens": 4791,
+        "total_tokens": 10677
+      }
+    },
+    {
+      "attempt": 25,
+      "timestamp": "2026-10-25T14:21:55.210562",
+      "file": "hu_stuff.odin",
+      "line": 202,
+      "error": "Error: 'sprintf' is not declared by 'libc' ",
+      "tokens": {
+        "prompt_tokens": 6157,
+        "candidates_tokens": 5277,
+        "total_tokens": 11434
+      }
+    },
+    {
+      "attempt": 26,
+      "timestamp": "2026-10-25T14:22:17.539659",
+      "file": "s_sound.odin",
+      "line": 270,
+      "error": "Error: 'sprintf' is not declared by 'libc' ",
+      "tokens": {
+        "prompt_tokens": 4286,
+        "candidates_tokens": 3393,
+        "total_tokens": 7679
+      }
+    },
+    {
+      "attempt": 27,
+      "timestamp": "2026-10-25T14:22:50.232158",
+      "file": "r_segs.odin",
+      "line": 243,
+      "error": "Error: Index 'MAXDRAWSEGS' is out of bounds range 0..<256, got 256 ",
+      "tokens": {
+        "prompt_tokens": 5699,
+        "candidates_tokens": 5146,
+        "total_tokens": 10845
+      }
+    },
+    {
+      "attempt": 29,
+      "timestamp": "2026-10-25T14:25:30.872136",
+      "file": "am_map.odin",
+      "line": 222,
+      "error": "Error: Cannot assign value 'dx < 0 ? -MAXINT : MAXINT' of type 'int' to 'i32' in assignment ",
+      "tokens": {
+        "prompt_tokens": 11177,
+        "candidates_tokens": 10806,
+        "total_tokens": 21983
+      }
+    },
+    {
+      "attempt": 31,
+      "timestamp": "2026-10-25T14:27:16.905165",
+      "file": "r_plane.odin",
+      "line": 266,
+      "error": "Error: Cannot cast 'int(uintptr(top_ptr)) + pl[0].minx - 1' as '^u8' from 'int' ",
+      "tokens": {
+        "prompt_tokens": 3912,
+        "candidates_tokens": 2806,
+        "total_tokens": 6718
+      }
+    },
+    {
+      "attempt": 32,
+      "timestamp": "2026-10-25T14:27:39.809421",
+      "file": "sounds.odin",
+      "line": 188,
+      "error": "Error: @(init) procedures must be declared as \"contextless\" ",
+      "tokens": {
+        "prompt_tokens": 5431,
+        "candidates_tokens": 4598,
+        "total_tokens": 10029
+      }
+    },
+    {
+      "attempt": 33,
+      "timestamp": "2026-10-25T14:28:36.125094",
+      "file": "st_stuff.odin",
+      "line": 310,
+      "error": "Error: 'sprintf' is not declared by 'libc' ",
+      "tokens": {
+        "prompt_tokens": 11334,
+        "candidates_tokens": 9835,
+        "total_tokens": 21169
+      }
+    },
+    {
+      "attempt": 35,
+      "timestamp": "2026-10-25T14:29:38.306763",
+      "file": "p_setup.odin",
+      "line": 368,
+      "error": "Error: 'sprintf' is not declared by 'libc' ",
+      "tokens": {
+        "prompt_tokens": 5930,
+        "candidates_tokens": 4869,
+        "total_tokens": 10799
+      }
+    },
+    {
+      "attempt": 37,
+      "timestamp": "2026-10-25T14:31:40.505043",
+      "file": "g_game.odin",
+      "line": 485,
+      "error": "Error: 'sprintf' is not declared by 'libc' ",
+      "tokens": {
+        "prompt_tokens": 12493,
+        "candidates_tokens": 11008,
+        "total_tokens": 23501
+      }
+    },
+    {
+      "attempt": 38,
+      "timestamp": "2026-10-25T14:32:24.578330",
+      "file": "d_main.odin",
+      "line": 463,
+      "error": "Error: Cannot convert untyped value 'libc.SEEK_END' to 'Whence' from 'untyped integer' ",
+      "tokens": {
+        "prompt_tokens": 8614,
+        "candidates_tokens": 7662,
+        "total_tokens": 16276
+      }
+    }
+  ]
+}

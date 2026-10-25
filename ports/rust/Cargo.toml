@@ -1,0 +1,9 @@
+# Based on id Software's linuxdoom-1.10 (GNU GPL)
+[package]
+name = "linuxdoom"
+version = "1.10.0"
+edition = "2021"
+
+[[bin]]
+name = "linuxdoom"
+path = "src/main.rs"
