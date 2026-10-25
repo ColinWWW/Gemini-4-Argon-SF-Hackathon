@@ -84,7 +84,7 @@ P_StartButton :: proc(line: ^line_t, w: bwhere_e, texture: int, time: int) {
 	for i := 0; i < MAXBUTTONS; i += 1 {
 		if buttonlist[i].btimer == 0 {
 			buttonlist[i].line = line
-			buttonlist[i].where = w
+			buttonlist[i].where_ = w
 			buttonlist[i].btexture = texture
 			buttonlist[i].btimer = time
 			buttonlist[i].soundorg = (^mobj_t)(&line.frontsector.soundorg)
