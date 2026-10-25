@@ -27,9 +27,12 @@ ENV/
 dist/
 build/
 out/
+target/
+ports/rust/target/
 .next/
 
 # Project-specific
+scratch/
 wad/
 frames/
 *.raw
