@@ -55,10 +55,10 @@ AM_CLEARMARKKEY :: int('c')
 
 AM_NUMMARKPOINTS :: 10
 
-INITSCALEMTOF :: fixed_t(0.2 * f64(FRACUNIT))
+INITSCALEMTOF :: (FRACUNIT * 2) / 10
 F_PANINC      :: 4
-M_ZOOMIN      :: fixed_t(1.02 * f64(FRACUNIT))
-M_ZOOMOUT     :: fixed_t(f64(FRACUNIT) / 1.02)
+M_ZOOMIN      :: (102 * FRACUNIT) / 100
+M_ZOOMOUT     :: (100 * FRACUNIT) / 102
 
 FTOM :: #force_inline proc(x: int) -> fixed_t {
 	return FixedMul(fixed_t(i32(x) << 16), scale_ftom)
@@ -132,16 +132,16 @@ cheat_player_arrow := [16]mline_t{
 NUMCHEATPLYRLINES :: len(cheat_player_arrow)
 
 triangle_guy := [3]mline_t{
-	{ { fixed_t(-0.867 * f64(FRACUNIT)), fixed_t(-0.5 * f64(FRACUNIT)) }, { fixed_t(0.867 * f64(FRACUNIT)), fixed_t(-0.5 * f64(FRACUNIT)) } },
-	{ { fixed_t(0.867 * f64(FRACUNIT)), fixed_t(-0.5 * f64(FRACUNIT)) }, { 0, FRACUNIT } },
-	{ { 0, FRACUNIT }, { fixed_t(-0.867 * f64(FRACUNIT)), fixed_t(-0.5 * f64(FRACUNIT)) } },
+	{ { (-867 * FRACUNIT) / 1000, -FRACUNIT / 2 }, { (867 * FRACUNIT) / 1000, -FRACUNIT / 2 } },
+	{ { (867 * FRACUNIT) / 1000, -FRACUNIT / 2 }, { 0, FRACUNIT } },
+	{ { 0, FRACUNIT }, { (-867 * FRACUNIT) / 1000, -FRACUNIT / 2 } },
 }
 NUMTRIANGLEGUYLINES :: len(triangle_guy)
 
 thintriangle_guy := [3]mline_t{
-	{ { fixed_t(-0.5 * f64(FRACUNIT)), fixed_t(-0.7 * f64(FRACUNIT)) }, { FRACUNIT, 0 } },
-	{ { FRACUNIT, 0 }, { fixed_t(-0.5 * f64(FRACUNIT)), fixed_t(0.7 * f64(FRACUNIT)) } },
-	{ { fixed_t(-0.5 * f64(FRACUNIT)), fixed_t(0.7 * f64(FRACUNIT)) }, { fixed_t(-0.5 * f64(FRACUNIT)), fixed_t(-0.7 * f64(FRACUNIT)) } },
+	{ { -FRACUNIT / 2, (-7 * FRACUNIT) / 10 }, { FRACUNIT, 0 } },
+	{ { FRACUNIT, 0 }, { -FRACUNIT / 2, (7 * FRACUNIT) / 10 } },
+	{ { -FRACUNIT / 2, (7 * FRACUNIT) / 10 }, { -FRACUNIT / 2, (-7 * FRACUNIT) / 10 } },
 }
 NUMTHINTRIANGLEGUYLINES :: len(thintriangle_guy)
 
@@ -401,7 +401,7 @@ AM_LevelInit :: proc() {
 	AM_clearMarks()
 
 	AM_findMinMaxBoundaries()
-	scale_mtof = FixedDiv(min_scale_mtof, fixed_t(0.7 * f64(FRACUNIT)))
+	scale_mtof = FixedDiv(min_scale_mtof, (7 * FRACUNIT) / 10)
 	if scale_mtof > max_scale_mtof {
 		scale_mtof = min_scale_mtof
 	}
