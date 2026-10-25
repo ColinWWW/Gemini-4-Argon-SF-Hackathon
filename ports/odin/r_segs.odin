@@ -91,7 +91,7 @@ R_RenderMaskedSegRange :: proc(ds: ^drawseg_t, x1: int, x2: int) {
 	}
 
 	for dc_x = x1; dc_x <= x2; dc_x += 1 {
-		mcol := (^i16)(int(uintptr(maskedtexturecol)) + dc_x * size_of(i16))^
+		mcol := maskedtexturecol[dc_x]
 		if mcol != MAXSHORT {
 			if fixedcolormap == nil {
 				index := u32(spryscale) >> LIGHTSCALESHIFT
@@ -108,7 +108,7 @@ R_RenderMaskedSegRange :: proc(ds: ^drawseg_t, x1: int, x2: int) {
 			col := (^column_t)(uintptr(col_bytes) - 3)
 
 			R_DrawMaskedColumn(col)
-			((^i16)(int(uintptr(maskedtexturecol)) + dc_x * size_of(i16)))^ = MAXSHORT
+			maskedtexturecol[dc_x] = MAXSHORT
 		}
 		spryscale += rw_scalestep
 	}
@@ -229,7 +229,7 @@ R_RenderSegLoop :: proc() {
 			}
 
 			if maskedtexture {
-				((^i16)(int(uintptr(maskedtexturecol)) + rw_x * size_of(i16)))^ = i16(texturecolumn)
+				maskedtexturecol[rw_x] = i16(texturecolumn)
 			}
 		}
 
@@ -387,7 +387,7 @@ R_StoreWallRange :: proc(start: int, stop: int) {
 
 		if sidedef.midtexture != 0 {
 			maskedtexture = true
-			maskedtexturecol = ([^]i16)(int(uintptr(lastopening)) - rw_x * size_of(i16))
+			maskedtexturecol = ([^]i16)(uintptr(lastopening) - uintptr(rw_x * size_of(i16)))
 			ds_p[0].maskedtexturecol = maskedtexturecol
 			lastopening = &lastopening[rw_stopx - rw_x]
 		}
@@ -477,13 +477,13 @@ R_StoreWallRange :: proc(start: int, stop: int) {
 
 	if ((ds_p[0].silhouette & SIL_TOP) != 0 || maskedtexture) && ds_p[0].sprtopclip == nil {
 		libc.memcpy(lastopening, &ceilingclip[start], uint(2 * (rw_stopx - start)))
-		ds_p[0].sprtopclip = ([^]i16)(int(uintptr(lastopening)) - start * size_of(i16))
+		ds_p[0].sprtopclip = ([^]i16)(uintptr(lastopening) - uintptr(start * size_of(i16)))
 		lastopening = &lastopening[rw_stopx - start]
 	}
 
 	if ((ds_p[0].silhouette & SIL_BOTTOM) != 0 || maskedtexture) && ds_p[0].sprbottomclip == nil {
 		libc.memcpy(lastopening, &floorclip[start], uint(2 * (rw_stopx - start)))
-		ds_p[0].sprbottomclip = ([^]i16)(int(uintptr(lastopening)) - start * size_of(i16))
+		ds_p[0].sprbottomclip = ([^]i16)(uintptr(lastopening) - uintptr(start * size_of(i16)))
 		lastopening = &lastopening[rw_stopx - start]
 	}
 
