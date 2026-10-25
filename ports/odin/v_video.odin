@@ -106,8 +106,8 @@ V_CopyRect :: proc(srcx: int, srcy: int, srcscrn: int, width: int, height_in: in
 
 	V_MarkRect(destx, desty, width, height)
 
-	src := &screens[srcscrn][SCREENWIDTH * srcy + srcx]
-	dest := &screens[destscrn][SCREENWIDTH * desty + destx]
+	src := ([^]byte)(&screens[srcscrn][SCREENWIDTH * srcy + srcx])
+	dest := ([^]byte)(&screens[destscrn][SCREENWIDTH * desty + destx])
 
 	for ; height > 0; height -= 1 {
 		libc.memcpy(dest, src, uint(width))
@@ -131,7 +131,7 @@ V_DrawPatch :: proc(x_in: int, y_in: int, scrn: int, patch: ^patch_t) {
 	}
 
 	col := 0
-	desttop := &screens[scrn][y * SCREENWIDTH + x]
+	desttop := ([^]byte)(&screens[scrn][y * SCREENWIDTH + x])
 
 	w := int(SHORT(patch.width))
 	colofs := ([^]i32)(&patch.columnofs[0])
@@ -171,7 +171,7 @@ V_DrawPatchFlipped :: proc(x_in: int, y_in: int, scrn: int, patch: ^patch_t) {
 	}
 
 	col := 0
-	desttop := &screens[scrn][y * SCREENWIDTH + x]
+	desttop := ([^]byte)(&screens[scrn][y * SCREENWIDTH + x])
 
 	w := int(SHORT(patch.width))
 	colofs := ([^]i32)(&patch.columnofs[0])
@@ -211,7 +211,7 @@ V_DrawBlock :: proc(x: int, y: int, scrn: int, width: int, height_in: int, src_i
 
 	V_MarkRect(x, y, width, height)
 
-	dest := &screens[scrn][y * SCREENWIDTH + x]
+	dest := ([^]byte)(&screens[scrn][y * SCREENWIDTH + x])
 
 	for height > 0 {
 		height -= 1
@@ -229,7 +229,7 @@ V_GetBlock :: proc(x: int, y: int, scrn: int, width: int, height_in: int, dest_i
 		I_Error("Bad V_DrawBlock")
 	}
 
-	src := &screens[scrn][y * SCREENWIDTH + x]
+	src := ([^]byte)(&screens[scrn][y * SCREENWIDTH + x])
 
 	for height > 0 {
 		height -= 1
@@ -242,6 +242,6 @@ V_GetBlock :: proc(x: int, y: int, scrn: int, width: int, height_in: int, dest_i
 V_Init :: proc() {
 	base := I_AllocLow(SCREENWIDTH * SCREENHEIGHT * 4)
 	for i := 0; i < 4; i += 1 {
-		screens[i] = &base[i * SCREENWIDTH * SCREENHEIGHT]
+		screens[i] = ([^]byte)(&base[i * SCREENWIDTH * SCREENHEIGHT])
 	}
 }
